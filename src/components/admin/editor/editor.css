@@ -1,0 +1,34 @@
+/* Small styles the editor needs that Tailwind classes can't reach (they're created by the editor itself) */
+
+/* Grey hint text when the editor is empty */
+.blog-editor .ProseMirror p.is-editor-empty:first-child::before {
+    content: attr(data-placeholder);
+    float: left;
+    height: 0;
+    color: #a1a1aa;
+    pointer-events: none;
+}
+
+/* Table cells while editing */
+.blog-editor .ProseMirror table td,
+.blog-editor .ProseMirror table th {
+    position: relative;
+    min-width: 3em;
+    vertical-align: top;
+}
+
+/* Blue tint on selected cells (drag across cells to select, then Merge) */
+.blog-editor .ProseMirror .selectedCell::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgb(99 102 241 / 0.15);
+    pointer-events: none;
+}
+
+/* Outline around a clicked image or divider */
+.blog-editor .ProseMirror img.ProseMirror-selectednode,
+.blog-editor .ProseMirror hr.ProseMirror-selectednode {
+    outline: 3px solid #6366f1;
+    outline-offset: 2px;
+}
