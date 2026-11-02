@@ -2,13 +2,29 @@
 
 import { useState } from "react";
 import { BlogEditor } from "@/components/admin/editor/BlogEditor";
+import { ImagePicker } from "@/components/admin/media/ImagePicker";
+import { BlogThumbnail } from "@/components/public/BlogThumbnail";
 import { BlogContent } from "@/components/blog/BlogContent";
+import { useDraft } from "@/lib/use-draft";
 
 export default function EditorTestPage() {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [content, setContent] = useState("");
+    const [thumbnail, setThumbnail] = useState("");
     const [published, setPublished] = useState(false);
+
+    // Keeps the work in this browser, so a refresh doesn't wipe it
+    const { savedAt, clear } = useDraft(
+        "blog-draft:editor-test",
+        { title, description, thumbnail, content },
+        (d) => {
+            setTitle(d.title);
+            setDescription(d.description);
+            setThumbnail(d.thumbnail ?? "");
+            setContent(d.content);
+        },
+    );
 
     // A fake "published blog page" so we can see the result before Samarth's pages exist
     if (published) {
@@ -18,7 +34,7 @@ export default function EditorTestPage() {
             .filter(Boolean).length;
         return (
             <div className="min-h-screen w-full bg-white dark:bg-zinc-950">
-                <div className="sticky top-0 z-10 border-b border-zinc-200 bg-amber-50 px-4 py-2 text-center text-xs text-amber-800">
+                <div className="sticky top-0 z-10 border-b border-zinc-200 bg-amber-50 px-4 py-2 text-center text-caption text-amber-800">
                     Test preview of the public blog page ·{" "}
                     <button onClick={() => setPublished(false)} className="font-semibold underline">
                         Back to editor
@@ -26,12 +42,12 @@ export default function EditorTestPage() {
                 </div>
 
                 <article className="mx-auto w-full max-w-3xl px-4 py-12 sm:py-16">
-                    <p className="text-sm font-medium text-indigo-600">Technology</p>
-                    <h1 className="mt-2 text-4xl font-bold tracking-tight text-zinc-900 sm:text-5xl dark:text-zinc-50">
+                    <p className="text-small font-medium text-indigo-600">Technology</p>
+                    <h1 className="mt-2 text-display text-zinc-900 dark:text-zinc-50">
                         {title || "Untitled blog"}
                     </h1>
-                    {description && <p className="mt-4 text-lg text-zinc-600">{description}</p>}
-                    <p className="mt-6 border-b border-zinc-200 pb-6 text-sm text-zinc-500">
+                    {description && <p className="mt-4 text-body text-zinc-600">{description}</p>}
+                    <p className="mt-6 border-b border-zinc-200 pb-6 text-small text-zinc-500">
                         {new Date().toLocaleDateString("en-IN", {
                             day: "numeric",
                             month: "long",
@@ -39,6 +55,16 @@ export default function EditorTestPage() {
                         })}{" "}
                         · {Math.max(1, Math.ceil(words / 200))} min read
                     </p>
+
+                    {thumbnail && (
+                        <BlogThumbnail
+                            src={thumbnail}
+                            title={title}
+                            eager
+                            sizes="(min-width: 768px) 768px, 100vw"
+                            className="mt-8 aspect-[16/10] w-full rounded-xl"
+                        />
+                    )}
 
                     <BlogContent html={content} className="mt-8" />
                 </article>
@@ -52,14 +78,16 @@ export default function EditorTestPage() {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Title"
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-lg"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-heading"
             />
             <input
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Description"
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-small"
             />
+            {/* Same field Samarth adds to the real blog form */}
+            <ImagePicker value={thumbnail || null} onChange={(url) => setThumbnail(url ?? "")} />
             <BlogEditor
                 value={content}
                 onChange={setContent}
@@ -70,7 +98,29 @@ export default function EditorTestPage() {
                 }}
             />
             <div className="flex items-center justify-between gap-4">
-                <details className="text-xs">
+                <p className="text-caption text-gray-500" aria-live="polite">
+                    {savedAt
+                        ? `Draft saved on this device at ${new Date(savedAt).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" })}`
+                        : "Start typing: your draft is saved on this device automatically"}
+                    {savedAt && (
+                        <button
+                            type="button"
+                            onClick={() => {
+                                clear();
+                                setTitle("");
+                                setDescription("");
+                                setThumbnail("");
+                                setContent("");
+                            }}
+                            className="ml-3 font-medium text-red-600 hover:underline"
+                        >
+                            Clear draft
+                        </button>
+                    )}
+                </p>
+            </div>
+            <div className="flex items-center justify-between gap-4">
+                <details className="text-caption">
                     <summary className="cursor-pointer text-gray-500">
                         Saved HTML ({content.length} characters)
                     </summary>
@@ -81,7 +131,7 @@ export default function EditorTestPage() {
                 <button
                     onClick={() => setPublished(true)}
                     disabled={!content}
-                    className="shrink-0 rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700 disabled:opacity-40"
+                    className="shrink-0 rounded-lg bg-gray-900 px-4 py-2 text-small font-medium text-white hover:bg-gray-700 disabled:opacity-40"
                 >
                     See as published blog
                 </button>

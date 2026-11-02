@@ -69,9 +69,9 @@ export function MarkdownImport({ editor, onImport }: MarkdownImportProps) {
                 disabled={busy}
                 onMouseDown={(e) => e.preventDefault()}
                 onClick={() => inputRef.current?.click()}
-                className="flex h-7 items-center gap-1.5 rounded border border-zinc-300 bg-white px-2 text-xs font-medium text-zinc-700 hover:bg-zinc-100 disabled:opacity-60 dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800"
+                className="border-brand-200 text-brand-900 hover:bg-brand-50 text-small flex h-8 shrink-0 items-center gap-2 rounded-md border bg-white px-3 font-medium whitespace-nowrap transition-colors disabled:opacity-60"
             >
-                {busy ? <Loader2 className="size-3.5 animate-spin" /> : <FileUp className="size-3.5" />}
+                {busy ? <Loader2 className="size-4 animate-spin" /> : <FileUp className="size-4" />}
                 {busy ? "Importing..." : "Import file"}
             </button>
         </>

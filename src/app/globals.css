@@ -1,4 +1,79 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+@utility prose-brand {
+  --tw-prose-body: #4A3628;
+  --tw-prose-headings: #2B1E14;
+  --tw-prose-lead: #4A3628;
+  --tw-prose-links: #664930;
+  --tw-prose-bold: #2B1E14;
+  --tw-prose-counters: #6E5847;
+  --tw-prose-bullets: #997E67;
+  --tw-prose-hr: #CCBEB1;
+  --tw-prose-quotes: #2B1E14;
+  --tw-prose-quote-borders: #997E67;
+  --tw-prose-captions: #6E5847;
+  --tw-prose-code: #664930;
+  --tw-prose-pre-code: #FFDBBB;
+  --tw-prose-pre-bg: #2B1E14;
+  --tw-prose-th-borders: #CCBEB1;
+  --tw-prose-td-borders: #CCBEB1;
+}
+
+@theme {
+  --font-sans: var(--font-inter);
+  --color-brand-50: #FBF4EE;
+  --color-brand-100: #FFDBBB;
+  --color-brand-200: #CCBEB1;
+  --color-brand-400: #997E67;
+  --color-brand-600: #664930;
+  --color-brand-700: #4A3628;
+  --color-brand-muted: #6E5847;
+  --color-brand-900: #2B1E14;
+}
+
+:root {
+  --background: #FFFFFF;
+  --foreground: #2B1E14;
+}
+
+.dark {
+  --background: #1A120C;
+  --foreground: #FBF4EE;
+}
+
+body {
+  font-size: var(--text-body);
+  line-height: var(--text-body--line-height);
+}
+
 @custom-variant dark (&:where(.dark, .dark *));
+
+/* ONE type scale for the whole website (public site, admin, editor, blog content).
+   Use only these 6 sizes: text-display, text-title, text-heading, text-body, text-small, text-caption.
+   Each one already sets size + line height (+ weight for the big ones), so don't add
+   font-bold / leading-* / tracking-* next to them. */
+@theme {
+  --text-display: 2.25rem; /* 36px: page titles, featured blog title */
+  --text-display--line-height: 1.15;
+  --text-display--font-weight: 700;
+  --text-display--letter-spacing: -0.02em;
+
+  --text-title: 1.5rem; /* 24px: section headings */
+  --text-title--line-height: 1.3;
+  --text-title--font-weight: 700;
+  --text-title--letter-spacing: -0.01em;
+
+  --text-heading: 1.125rem; /* 18px: card titles, small headings */
+  --text-heading--line-height: 1.4;
+  --text-heading--font-weight: 600;
+
+  --text-body: 1rem; /* 16px: normal text */
+  --text-body--line-height: 1.65;
+
+  --text-small: 0.875rem; /* 14px: descriptions, buttons, menus */
+  --text-small--line-height: 1.5;
+
+  --text-caption: 0.75rem; /* 12px: dates, labels, counts */
+  --text-caption--line-height: 1.4;
+}

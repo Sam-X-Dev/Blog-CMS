@@ -15,7 +15,13 @@ export function createExtensions(placeholder: string) {
             heading: { levels: [1, 2, 3] },
             link: { openOnClick: false, autolink: true, defaultProtocol: "https" },
         }),
-        TextStyleKit.configure({ backgroundColor: false, lineHeight: false }),
+        // Text colour only: font and size come from the website, so every blog looks the same
+        TextStyleKit.configure({
+            backgroundColor: false,
+            lineHeight: false,
+            fontFamily: false,
+            fontSize: false,
+        }),
         TextAlign.configure({ types: ["heading", "paragraph"] }),
         Highlight.configure({ multicolor: true }),
         Subscript,

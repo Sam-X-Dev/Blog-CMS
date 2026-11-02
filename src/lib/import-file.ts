@@ -31,7 +31,7 @@ const CODE_LANGUAGES: Record<string, string> = {
 export const IMPORT_GROUPS = [
     { label: "Markdown", exts: ["md", "markdown"] },
     { label: "Word", exts: ["docx"] },
-    { label: "PDF (text only)", exts: ["pdf"] },
+    { label: "PDF", exts: ["pdf"] },
     { label: "Web page", exts: ["html", "htm"] },
     { label: "Plain text", exts: ["txt"] },
     { label: "Code", exts: Object.keys(CODE_LANGUAGES) },
@@ -63,27 +63,6 @@ function textToHtml(text: string) {
         .filter(Boolean)
         .map((p) => `<p>${escapeHtml(p).replace(/\n/g, "<br>")}</p>`)
         .join("");
-}
-
-/** PDF lines → paragraphs: a line ending with . ! ? : closes the paragraph */
-function pdfPageToHtml(text: string) {
-    const paragraphs: string[] = [];
-    let current = "";
-    for (const raw of text.split("\n")) {
-        const line = raw.trim();
-        if (!line) {
-            if (current) paragraphs.push(current);
-            current = "";
-            continue;
-        }
-        current = current ? `${current} ${line}` : line;
-        if (/[.!?:]["')\]]?$/.test(line)) {
-            paragraphs.push(current);
-            current = "";
-        }
-    }
-    if (current) paragraphs.push(current);
-    return paragraphs.map((p) => `<p>${escapeHtml(p)}</p>`).join("");
 }
 
 /**
@@ -124,16 +103,18 @@ export async function fileToHtml(file: File): Promise<ImportResult> {
     }
 
     if (ext === "pdf") {
-        const { extractText, getDocumentProxy } = await import("unpdf");
-        const pdf = await getDocumentProxy(new Uint8Array(await file.arrayBuffer()));
-        const { text } = await extractText(pdf, { mergePages: false });
-        const html = text.map(pdfPageToHtml).join("");
+        // Loaded only when needed (PDF.js is big)
+        const { pdfToHtml } = await import("@/lib/pdf-import");
+        const { html, title, hadImages } = await pdfToHtml(await file.arrayBuffer());
         if (!html) {
             throw new ImportError("No text found in this PDF (it may be a scanned image)");
         }
         return {
             html,
-            note: "PDF import brings in the text only. Check headings and add images yourself.",
+            title,
+            note: hadImages
+                ? "Images inside the PDF were skipped. Add them with Insert → Picture."
+                : "Check the result: PDFs don't store headings and paragraphs, so they are rebuilt from the layout.",
         };
     }
 

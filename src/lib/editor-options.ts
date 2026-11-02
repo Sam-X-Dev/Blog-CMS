@@ -1,35 +1,4 @@
-// Shared options for the blog editor (admin) and the blog content (public site).
-// Keep this list short and curated so every blog still looks clean on the website.
-
-export type FontOption = { label: string; value: string };
-
-/** "" = Default = the website's own font */
-export const FONT_FAMILIES: FontOption[] = [
-  { label: "Default", value: "" },
-  // Google Fonts (loaded by GOOGLE_FONTS_URL below)
-  { label: "Inter", value: "Inter, sans-serif" },
-  { label: "Roboto", value: "Roboto, sans-serif" },
-  { label: "Open Sans", value: '"Open Sans", sans-serif' },
-  { label: "Poppins", value: "Poppins, sans-serif" },
-  { label: "Montserrat", value: "Montserrat, sans-serif" },
-  { label: "Lato", value: "Lato, sans-serif" },
-  { label: "Merriweather", value: "Merriweather, serif" },
-  { label: "Lora", value: "Lora, serif" },
-  { label: "Playfair Display", value: '"Playfair Display", serif' },
-  { label: "Noto Sans Devanagari (Hindi)", value: '"Noto Sans Devanagari", sans-serif' },
-  // Fonts already on every computer
-  { label: "Arial", value: "Arial, Helvetica, sans-serif" },
-  { label: "Georgia", value: "Georgia, serif" },
-  { label: "Times New Roman", value: '"Times New Roman", Times, serif' },
-  { label: "Courier New", value: '"Courier New", Courier, monospace' },
-];
-
-/** One stylesheet for all the Google Fonts above (regular + bold). */
-export const GOOGLE_FONTS_URL =
-  "https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Roboto:wght@400;700&family=Open+Sans:wght@400;700&family=Poppins:wght@400;700&family=Montserrat:wght@400;700&family=Lato:wght@400;700&family=Merriweather:wght@400;700&family=Lora:wght@400;700&family=Playfair+Display:wght@400;700&family=Noto+Sans+Devanagari:wght@400;700&display=swap";
-
-/** Font sizes in px. "" = Default size. */
-export const FONT_SIZES = ["", "12", "14", "16", "18", "20", "24", "28", "32", "36", "48"];
+// Fonts and sizes are NOT options: every blog uses the website type scale (see globals.css).
 
 /** Office-style colour grid: 10 columns × 3 rows */
 export const TEXT_COLORS = [
@@ -47,4 +16,4 @@ export const HIGHLIGHT_COLORS = [
  * so what the writer sees is exactly what the reader sees.
  */
 export const BLOG_PROSE_CLASS =
-  "prose prose-zinc max-w-none dark:prose-invert prose-headings:font-semibold prose-strong:text-inherit prose-code:text-inherit prose-a:text-indigo-600 prose-img:rounded-lg prose-table:my-4 prose-table:border-collapse prose-th:border prose-th:border-zinc-300 prose-th:bg-zinc-50 prose-th:px-3 prose-th:py-2 prose-td:border prose-td:border-zinc-300 prose-td:px-3 prose-td:py-2 dark:prose-th:border-zinc-700 dark:prose-th:bg-zinc-800 dark:prose-td:border-zinc-700 [&_td>p]:m-0 [&_th>p]:m-0";
+  "prose prose-brand max-w-none dark:prose-invert prose-h1:text-display prose-h2:text-title prose-h3:text-heading prose-p:text-body prose-li:text-body prose-strong:text-inherit prose-code:text-inherit prose-a:text-brand-600 prose-img:rounded-lg prose-table:my-4 prose-table:border-collapse prose-th:border prose-th:border-brand-200 prose-th:bg-brand-50 prose-th:px-3 prose-th:py-2 prose-td:border prose-td:border-brand-200 prose-td:px-3 prose-td:py-2 dark:prose-th:border-brand-700 dark:prose-th:bg-[#1A120C] dark:prose-td:border-brand-700 [&_td>p]:m-0 [&_th>p]:m-0";

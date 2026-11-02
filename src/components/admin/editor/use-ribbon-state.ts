@@ -5,14 +5,13 @@ import { useEditorState, type Editor } from "@tiptap/react";
 export type BlockStyle = "paragraph" | "h1" | "h2" | "h3" | "blockquote" | "codeBlock";
 
 /**
- * Reads what's active at the cursor (bold? which font? inside a table?)
+ * Reads what's active at the cursor (bold? which style? inside a table?)
  * so the ribbon can highlight the right buttons. Re-renders only when these values change.
  */
 export function useRibbonState(editor: Editor) {
     return useEditorState({
         editor,
         selector: ({ editor: e }) => {
-            const textStyle = e.getAttributes("textStyle");
             const block: BlockStyle = e.isActive("heading", { level: 1 })
                 ? "h1"
                 : e.isActive("heading", { level: 2 })
@@ -32,8 +31,6 @@ export function useRibbonState(editor: Editor) {
                 strike: e.isActive("strike"),
                 superscript: e.isActive("superscript"),
                 subscript: e.isActive("subscript"),
-                fontFamily: (textStyle.fontFamily as string | undefined) ?? "",
-                fontSize: ((textStyle.fontSize as string | undefined) ?? "").replace("px", ""),
                 align: (["center", "right", "justify"].find((a) => e.isActive({ textAlign: a })) ??
                     "left") as "left" | "center" | "right" | "justify",
                 bulletList: e.isActive("bulletList"),

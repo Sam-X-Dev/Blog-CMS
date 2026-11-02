@@ -19,6 +19,6 @@ import type { BlogEditorProps } from "./EditorCore";
 export const BlogEditor = dynamic<BlogEditorProps>(() => import("./EditorCore"), {
     ssr: false,
     loading: () => (
-        <div className="h-[680px] animate-pulse rounded-xl border border-zinc-200 bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900" />
+        <div className="border-brand-200 bg-brand-50 h-[680px] animate-pulse rounded-xl border" />
     ),
 });

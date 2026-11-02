@@ -28,18 +28,32 @@ model Blog {
   title       String
   slug        String     @unique
   description String
-  content     String
-  thumbnail   String?
+  content     String // editor HTML
+  thumbnail   String? // required only when publishing (checked in API)
   status      BlogStatus @default(DRAFT)
   publishedAt DateTime?
+  isTrending  Boolean    @default(false) // admin pick for the Trending page (Abhishek)
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
-  categoryId  String?
-  category    Category?  @relation(fields: [categoryId], references: [id], onDelete: SetNull)
-  tags        Tag[]
+
+  categoryId String?
+  category   Category?  @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  tags       Tag[]
+  views      BlogView[]
 
   @@index([status, publishedAt])
   @@index([categoryId])
+}
+
+
+model BlogView {
+  blogId String
+  day    DateTime @db.Date
+  count  Int      @default(0)
+  blog   Blog     @relation(fields: [blogId], references: [id], onDelete: Cascade)
+
+  @@id([blogId, day])
+  @@index([day])
 }
 
 model Category {

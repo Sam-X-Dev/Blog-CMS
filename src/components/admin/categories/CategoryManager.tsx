@@ -48,7 +48,6 @@ export function CategoryManager() {
   const reloadCategories = () => {
     setIsLoading(true);
     setFetchError(null);
-
     apiFetch<Category[]>("/api/categories")
       .then((data) => {
         setCategories(data);
@@ -165,8 +164,8 @@ export function CategoryManager() {
   return (
     <div className="space-y-8">
       {/* Category Creation / Edit Form */}
-      <section className="rounded-xl border border-gray-200 bg-white p-6 shadow-xs dark:border-gray-800 dark:bg-gray-900">
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+      <section className="rounded-xl border border-brand-200 bg-white p-6 shadow-xs dark:border-brand-700 dark:bg-[#1A120C]">
+        <h2 className="text-heading text-brand-900 dark:text-brand-50">
           {editingCategory ? `Rename "${editingCategory.name}"` : "Add New Category"}
         </h2>
         <form onSubmit={handleSubmit} className="mt-4">
@@ -184,14 +183,14 @@ export function CategoryManager() {
                   if (fieldError) setFieldError(null);
                 }}
                 placeholder="e.g. Artificial Intelligence"
-                className={`w-full rounded-lg border px-3.5 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:outline-hidden dark:bg-gray-950 dark:text-gray-100 dark:placeholder-gray-500 ${
+                className={`w-full rounded-lg border px-3.5 py-2.5 text-small text-brand-900 placeholder-brand-muted/70 focus:ring-2 focus:outline-hidden dark:bg-[#1A120C] dark:text-brand-50 dark:placeholder-brand-muted ${
                   fieldError
                     ? "border-red-500 focus:border-red-500 focus:ring-red-200 dark:border-red-600 dark:focus:ring-red-950"
-                    : "border-gray-300 focus:border-gray-500 focus:ring-gray-200 dark:border-gray-700 dark:focus:ring-gray-800"
+                    : "border-brand-400 focus:border-brand-600 focus:ring-brand-400/20 dark:border-brand-400 dark:focus:border-brand-400 dark:focus:ring-brand-400/20"
                 }`}
               />
               {fieldError && (
-                <p className="mt-1.5 text-xs font-medium text-red-600 dark:text-red-400">
+                <p className="mt-1.5 text-caption font-medium text-red-600 dark:text-red-400">
                   {fieldError}
                 </p>
               )}
@@ -200,7 +199,7 @@ export function CategoryManager() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="inline-flex items-center justify-center rounded-lg bg-gray-900 px-4 py-2.5 text-sm font-semibold text-white shadow-xs transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200"
+                className="inline-flex items-center justify-center rounded-lg bg-brand-600 px-4 py-2.5 text-small font-semibold text-white shadow-xs transition hover:bg-brand-900 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {isSubmitting
                   ? editingCategory
@@ -215,7 +214,7 @@ export function CategoryManager() {
                   type="button"
                   onClick={handleCancelEdit}
                   disabled={isSubmitting}
-                  className="rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+                  className="rounded-lg border border-brand-400 bg-white px-3.5 py-2.5 text-small font-medium text-brand-900 transition hover:bg-brand-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-brand-700 dark:bg-[#1A120C] dark:text-brand-50 dark:hover:bg-brand-900"
                 >
                   Cancel
                 </button>
@@ -226,9 +225,9 @@ export function CategoryManager() {
       </section>
 
       {/* Category List */}
-      <section className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-xs dark:border-gray-800 dark:bg-gray-900">
-        <div className="border-b border-gray-200 px-6 py-4 dark:border-gray-800">
-          <h2 className="text-base font-semibold text-gray-900 dark:text-gray-100">
+      <section className="overflow-hidden rounded-xl border border-brand-200 bg-white shadow-xs dark:border-brand-700 dark:bg-[#1A120C]">
+        <div className="border-b border-brand-200 px-6 py-4 dark:border-brand-700">
+          <h2 className="text-body font-semibold text-brand-900 dark:text-brand-50">
             All Categories
           </h2>
         </div>
@@ -236,7 +235,7 @@ export function CategoryManager() {
         {isLoading ? (
           <div className="flex flex-col items-center justify-center px-6 py-16 text-center">
             <svg
-              className="h-8 w-8 animate-spin text-gray-400 dark:text-gray-600"
+              className="h-8 w-8 animate-spin text-brand-400 dark:text-brand-muted"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
@@ -255,29 +254,29 @@ export function CategoryManager() {
                 d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
               />
             </svg>
-            <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">Loading categories...</p>
+            <p className="mt-4 text-small text-brand-muted dark:text-brand-50">Loading categories...</p>
           </div>
         ) : fetchError ? (
           <div className="flex flex-col items-center justify-center px-6 py-16 text-center">
-            <p className="text-sm font-medium text-red-600 dark:text-red-400">{fetchError}</p>
+            <p className="text-small font-medium text-red-600 dark:text-red-400">{fetchError}</p>
             <button
               type="button"
               onClick={reloadCategories}
-              className="mt-4 inline-flex items-center rounded-lg bg-gray-100 px-3.5 py-2 text-xs font-semibold text-gray-800 transition hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
+              className="mt-4 inline-flex items-center rounded-lg border border-brand-400 bg-white px-3.5 py-2 text-caption font-semibold text-brand-900 transition hover:bg-brand-50 dark:border-brand-700 dark:bg-[#1A120C] dark:text-brand-50 dark:hover:bg-brand-900"
             >
               Try again
             </button>
           </div>
         ) : categories.length === 0 ? (
           <div className="px-6 py-16 text-center">
-            <p className="text-sm text-gray-500 dark:text-gray-400">
+            <p className="text-small text-brand-muted dark:text-brand-50">
               No categories yet. Create your first category above.
             </p>
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-800">
-              <thead className="bg-gray-50 text-left text-xs font-medium tracking-wider text-gray-500 uppercase dark:bg-gray-950 dark:text-gray-400">
+            <table className="min-w-full divide-y divide-brand-200 dark:divide-brand-700">
+              <thead className="bg-brand-50 text-left text-caption font-medium tracking-wider text-brand-muted uppercase dark:bg-[#1A120C] dark:text-brand-50">
                 <tr>
                   <th scope="col" className="px-6 py-3.5">
                     Name
@@ -293,20 +292,20 @@ export function CategoryManager() {
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200 bg-white text-sm dark:divide-gray-800 dark:bg-gray-900">
+              <tbody className="divide-y divide-brand-200 bg-white text-small dark:divide-brand-700 dark:bg-[#1A120C]">
                 {categories.map((category) => (
                   <tr
                     key={category.id}
-                    className="transition hover:bg-gray-50 dark:hover:bg-gray-800/50"
+                    className="transition hover:bg-brand-50 dark:hover:bg-brand-900/40"
                   >
-                    <td className="px-6 py-4 font-medium whitespace-nowrap text-gray-900 dark:text-gray-100">
+                    <td className="px-6 py-4 font-medium whitespace-nowrap text-brand-900 dark:text-brand-50">
                       {category.name}
                     </td>
-                    <td className="hidden px-6 py-4 font-mono text-xs whitespace-nowrap text-gray-500 sm:table-cell dark:text-gray-400">
+                    <td className="hidden px-6 py-4 text-caption whitespace-nowrap text-brand-muted sm:table-cell dark:text-brand-50">
                       {category.slug}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-gray-600 dark:text-gray-300">
-                      <span className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-800 dark:text-gray-200">
+                    <td className="px-6 py-4 whitespace-nowrap text-brand-700 dark:text-brand-50">
+                      <span className="inline-flex items-center rounded-full bg-brand-100 px-2.5 py-0.5 text-caption font-medium text-brand-900 dark:bg-brand-900 dark:text-brand-100">
                         {category._count?.blogs ?? 0}
                       </span>
                     </td>
@@ -315,7 +314,7 @@ export function CategoryManager() {
                         <button
                           type="button"
                           onClick={() => handleStartEdit(category)}
-                          className="font-medium text-indigo-600 transition hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300"
+                          className="font-medium text-brand-600 transition hover:text-brand-900 dark:text-brand-100 dark:hover:text-brand-50"
                         >
                           Edit
                         </button>

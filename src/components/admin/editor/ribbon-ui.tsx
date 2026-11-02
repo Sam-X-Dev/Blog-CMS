@@ -5,7 +5,15 @@ import type { LucideIcon } from "lucide-react";
 import { ChevronDown } from "lucide-react";
 
 /** Stops toolbar clicks from stealing focus (and the text selection) from the editor */
-const keepFocus = (e: React.MouseEvent) => e.preventDefault();
+export const keepFocus = (e: React.MouseEvent) => e.preventDefault();
+
+/** Shared look for every ribbon button */
+const buttonBase =
+    "flex shrink-0 items-center justify-center rounded-md text-brand-900 transition-colors hover:bg-brand-50 disabled:pointer-events-none disabled:opacity-35";
+const smallSize = "size-8";
+const largeSize =
+    "h-16 min-w-16 flex-col gap-1.5 px-2.5 text-caption font-medium whitespace-nowrap";
+const activeLook = "bg-brand-100 ring-1 ring-brand-200 hover:bg-brand-100";
 
 type RibbonButtonProps = {
     icon: LucideIcon;
@@ -36,10 +44,9 @@ export function RibbonButton({
             disabled={disabled}
             onMouseDown={keepFocus}
             onClick={onClick}
-            className={`flex items-center justify-center rounded text-zinc-700 transition-colors hover:bg-zinc-200 disabled:pointer-events-none disabled:opacity-35 dark:text-zinc-300 dark:hover:bg-zinc-700 ${large ? "h-[58px] min-w-14 flex-col gap-1 px-2 text-[11px]" : "size-7"
-                } ${active ? "bg-indigo-100 text-indigo-700 ring-1 ring-indigo-300 dark:bg-indigo-950 dark:text-indigo-300 dark:ring-indigo-800" : ""}`}
+            className={`${buttonBase} ${large ? largeSize : smallSize} ${active ? activeLook : ""}`}
         >
-            <Icon className={large ? "size-6" : "size-4"} strokeWidth={1.75} />
+            <Icon className={large ? "size-6" : "size-[18px]"} strokeWidth={1.75} />
             {large && <span className="leading-none">{label}</span>}
         </button>
     );
@@ -48,11 +55,18 @@ export function RibbonButton({
 /** A labelled block of buttons, like "Font" or "Paragraph" in Office */
 export function RibbonGroup({ label, children }: { label: string; children: React.ReactNode }) {
     return (
-        <div className="flex shrink-0 flex-col justify-between border-r border-zinc-200 px-2 last:border-r-0 dark:border-zinc-700">
-            <div className="flex flex-1 items-center">{children}</div>
-            <div className="pt-1 text-center text-[10px] text-zinc-500 select-none">{label}</div>
+        <div className="border-brand-200 flex shrink-0 flex-col border-r px-3 last:border-r-0">
+            <div className="flex flex-1 items-center gap-1">{children}</div>
+            <div className="text-caption text-brand-muted pt-1.5 text-center whitespace-nowrap select-none">
+                {label}
+            </div>
         </div>
     );
+}
+
+/** A thin vertical line between buttons inside one group */
+export function RibbonDivider() {
+    return <span aria-hidden className="bg-brand-200 mx-1 h-5 w-px shrink-0" />;
 }
 
 type DropdownProps = {
@@ -86,6 +100,8 @@ export function Dropdown({ trigger, title, disabled, arrowOnly, large, children 
         };
     }, [open]);
 
+    const size = large ? largeSize : arrowOnly ? "h-8 w-5" : "h-8 gap-1 px-2";
+
     return (
         <div ref={ref} className="relative">
             <button
@@ -96,19 +112,71 @@ export function Dropdown({ trigger, title, disabled, arrowOnly, large, children 
                 disabled={disabled}
                 onMouseDown={keepFocus}
                 onClick={() => setOpen((o) => !o)}
-                className={`flex items-center justify-center rounded text-zinc-700 hover:bg-zinc-200 disabled:pointer-events-none disabled:opacity-35 dark:text-zinc-300 dark:hover:bg-zinc-700 ${large
-                        ? "h-[58px] min-w-14 flex-col gap-1 px-2 text-[11px]"
-                        : `h-7 gap-0.5 ${arrowOnly ? "w-3.5" : "px-1"}`
-                    } ${open ? "bg-zinc-200 dark:bg-zinc-700" : ""}`}
+                className={`${buttonBase} ${size} ${open ? "bg-brand-100" : ""}`}
             >
                 {trigger}
-                <ChevronDown className="size-3 shrink-0 opacity-60" />
+                {/* Large triggers draw their own arrow next to the label (see DropdownLabel) */}
+                {!large && <ChevronDown className="size-3.5 shrink-0 opacity-60" />}
             </button>
             {open && (
-                <div className="absolute top-full left-0 z-30 mt-1 rounded-lg border border-zinc-200 bg-white p-2 shadow-xl dark:border-zinc-700 dark:bg-zinc-900">
+                <div className="border-brand-200 absolute top-full left-0 z-30 mt-1.5 rounded-lg border bg-white p-3 shadow-lg">
                     {children(() => setOpen(false))}
                 </div>
             )}
+        </div>
+    );
+}
+
+/** Icon + "Label ▾" for a large Dropdown trigger */
+export function DropdownLabel({ icon: Icon, label }: { icon: LucideIcon; label: string }) {
+    return (
+        <>
+            <Icon className="size-6" strokeWidth={1.75} />
+            <span className="flex items-center gap-0.5 leading-none">
+                {label}
+                <ChevronDown className="size-3 opacity-60" />
+            </span>
+        </>
+    );
+}
+
+type ColorSplitButtonProps = {
+    label: string;
+    /** The letter or icon drawn above the colour bar */
+    icon: React.ReactNode;
+    /** Last used colour: shown in the bar and applied on click */
+    color: string;
+    onApply: () => void;
+    /** The colour panel that opens from the arrow */
+    children: (close: () => void) => React.ReactNode;
+};
+
+/**
+ * Office-style split button: the left part applies the last colour,
+ * the arrow opens the palette. The bar under the icon shows that colour,
+ * with a thin outline so light colours (yellow, white) stay visible.
+ */
+export function ColorSplitButton({ label, icon, color, onApply, children }: ColorSplitButtonProps) {
+    return (
+        <div className="flex items-center">
+            <button
+                type="button"
+                title={label}
+                aria-label={label}
+                onMouseDown={keepFocus}
+                onClick={onApply}
+                className={`${buttonBase} ${smallSize} flex-col gap-[3px]`}
+            >
+                {icon}
+                <span
+                    aria-hidden
+                    className="h-1 w-5 rounded-full ring-1 ring-black/20"
+                    style={{ backgroundColor: color }}
+                />
+            </button>
+            <Dropdown title={`Choose ${label.toLowerCase()}`} arrowOnly trigger={null}>
+                {children}
+            </Dropdown>
         </div>
     );
 }
@@ -123,12 +191,12 @@ type ColorGridProps = {
 /** Office-style colour palette */
 export function ColorGrid({ colors, resetLabel, onPick, onReset }: ColorGridProps) {
     return (
-        <div className="w-[232px]">
+        <div className="w-[236px]">
             <button
                 type="button"
                 onMouseDown={keepFocus}
                 onClick={onReset}
-                className="mb-2 w-full rounded border border-zinc-200 px-2 py-1 text-left text-xs hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800"
+                className="border-brand-200 text-brand-900 hover:bg-brand-50 text-small mb-3 flex h-8 w-full items-center rounded-md border px-3 text-left"
             >
                 {resetLabel}
             </button>
@@ -141,7 +209,7 @@ export function ColorGrid({ colors, resetLabel, onPick, onReset }: ColorGridProp
                         aria-label={c}
                         onMouseDown={keepFocus}
                         onClick={() => onPick(c)}
-                        className="size-5 rounded-sm border border-zinc-300 transition-transform hover:scale-125 dark:border-zinc-600"
+                        className="size-5 rounded ring-1 ring-black/15 transition-transform ring-inset hover:scale-125"
                         style={{ backgroundColor: c }}
                     />
                 ))}
@@ -150,8 +218,5 @@ export function ColorGrid({ colors, resetLabel, onPick, onReset }: ColorGridProp
     );
 }
 
-export const selectClass =
-    "h-7 rounded border border-zinc-300 bg-white px-1.5 text-xs text-zinc-800 outline-none hover:border-zinc-400 focus:border-indigo-500 dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-200";
-
 export const inputClass =
-    "h-8 w-full rounded border border-zinc-300 bg-white px-2 text-sm outline-none focus:border-indigo-500 dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100";
+    "h-9 w-full rounded-md border border-brand-200 bg-white px-3 text-small text-brand-900 outline-none placeholder:text-brand-400 focus:border-brand-400 focus:ring-2 focus:ring-brand-100";

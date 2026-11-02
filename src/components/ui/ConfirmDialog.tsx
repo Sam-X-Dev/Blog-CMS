@@ -50,12 +50,12 @@ export function ConfirmDialog({
       }}
     >
       <div
-        className="w-full max-w-md rounded-xl border border-gray-200 bg-white p-6 shadow-2xl transition-all dark:border-gray-800 dark:bg-gray-900"
+        className="w-full max-w-md rounded-xl border border-brand-200 bg-white p-6 shadow-2xl transition-all dark:border-brand-700 dark:bg-[#1A120C]"
         onClick={(e) => e.stopPropagation()}
       >
         <h2
           id="confirm-dialog-title"
-          className="text-lg font-semibold text-gray-900 dark:text-gray-100"
+          className="text-heading text-brand-900 dark:text-brand-50"
         >
           {title}
         </h2>
@@ -63,7 +63,7 @@ export function ConfirmDialog({
         {description && (
           <p
             id="confirm-dialog-description"
-            className="mt-2 text-sm text-gray-600 dark:text-gray-400"
+            className="mt-2 text-small text-brand-700 dark:text-brand-50"
           >
             {description}
           </p>
@@ -74,7 +74,7 @@ export function ConfirmDialog({
             type="button"
             disabled={loading}
             onClick={onCancel}
-            className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+            className="rounded-lg border border-brand-400 bg-white px-4 py-2 text-small font-medium text-brand-900 transition hover:bg-brand-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-brand-700 dark:bg-[#1A120C] dark:text-brand-50 dark:hover:bg-brand-900"
           >
             Cancel
           </button>
@@ -82,7 +82,7 @@ export function ConfirmDialog({
             type="button"
             disabled={loading}
             onClick={onConfirm}
-            className="inline-flex items-center justify-center rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
+            className="inline-flex items-center justify-center rounded-lg bg-red-600 px-4 py-2 text-small font-medium text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {loading ? (
               <>
