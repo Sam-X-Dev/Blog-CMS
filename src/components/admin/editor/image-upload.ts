@@ -2,9 +2,12 @@ import type { Editor } from "@tiptap/react";
 import { toast } from "sonner";
 import { altFromFileName, uploadImage } from "@/lib/media-upload";
 
-/** Picture + an empty line after it, so typing next never replaces the picture */
-export function imageNodes(src: string, alt: string | null) {
-  return [{ type: "image", attrs: { src, alt: alt || null } }, { type: "paragraph" }];
+/**
+ * Picture (as a figure, so it can get a caption) + an empty line after it,
+ * so typing next never replaces the picture
+ */
+export function imageNodes(src: string, alt: string | null, caption = "") {
+  return [{ type: "figure", attrs: { src, alt: alt || null, caption } }, { type: "paragraph" }];
 }
 
 /**

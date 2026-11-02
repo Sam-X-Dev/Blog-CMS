@@ -1,4 +1,4 @@
-import { parseMarkdown } from "@/lib/markdown";
+import { apiFetch } from "@/lib/api-client";
 
 /** Code files are imported as a code block, with the language for colouring later */
 const CODE_LANGUAGES: Record<string, string> = {
@@ -80,7 +80,12 @@ export async function fileToHtml(file: File): Promise<ImportResult> {
         throw new ImportError(`File is too large (max ${heavy ? 10 : 1} MB)`);
     }
 
-    if (ext === "md" || ext === "markdown") return parseMarkdown(await file.text());
+    if (ext === "md" || ext === "markdown") {
+        // Converted on the server (POST /api/markdown), which also cleans the HTML
+        const form = new FormData();
+        form.append("file", file);
+        return apiFetch<ImportResult>("/api/markdown", { method: "POST", body: form });
+    }
 
     if (ext === "txt") return { html: textToHtml(await file.text()) };
 

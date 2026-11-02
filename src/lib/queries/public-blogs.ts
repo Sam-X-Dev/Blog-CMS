@@ -59,11 +59,12 @@ const NEWEST_FIRST = [
     { createdAt: "desc" },
 ] as const;
 
-/** Only published blogs, optionally inside one category */
-function publishedIn(categorySlug?: string) {
+/** Only published blogs, optionally inside one category and/or with one tag */
+function publishedIn(categorySlug?: string, tagSlug?: string) {
     return {
         status: "PUBLISHED" as const,
         ...(categorySlug ? { category: { slug: categorySlug } } : {}),
+        ...(tagSlug ? { tags: { some: { slug: tagSlug } } } : {}),
     };
 }
 
@@ -79,6 +80,40 @@ export async function getLatestBlogs(limit = 7): Promise<BlogCardData[]> {
         select: CARD_SELECT,
     });
     return blogs.map(toCard);
+}
+
+/**
+ * Homepage: the featured blog (newest admin pick, or simply the newest blog if nothing is picked)
+ * and the latest blogs after it. The featured blog is never repeated in "latest".
+ */
+export async function getHomeBlogs(latestCount = 6): Promise<{
+    featured: BlogCardData | null;
+    latest: BlogCardData[];
+}> {
+    await connection();
+
+    const [pick, newest] = await Promise.all([
+        prisma.blog.findFirst({
+            where: { ...publishedIn(), isFeatured: true },
+            orderBy: [...NEWEST_FIRST],
+            select: CARD_SELECT,
+        }),
+        prisma.blog.findMany({
+            where: publishedIn(),
+            orderBy: [...NEWEST_FIRST],
+            take: latestCount + 1,
+            select: CARD_SELECT,
+        }),
+    ]);
+
+    const featured = pick ?? newest[0] ?? null;
+    const latest = newest.filter((b) => b.id !== featured?.id).slice(0, latestCount);
+    return { featured: featured ? toCard(featured) : null, latest: latest.map(toCard) };
+}
+
+/** A tag by its slug (for the "tagged ..." filter on /blogs). Null if it doesn't exist. */
+export async function getTagBySlug(slug: string) {
+    return prisma.tag.findUnique({ where: { slug }, select: { name: true, slug: true } });
 }
 
 /**
@@ -188,18 +223,20 @@ export async function getMostReadThisWeek(
 }
 
 /**
- * The all-blogs page: search (title, description, category name), filter by category,
- * sort, and one page of results.
+ * The all-blogs page: search (title, description, tags, category name),
+ * filter by category and tag, sort, and one page of results.
  */
 export async function searchBlogs({
     q,
     categorySlug,
+    tagSlug,
     sort,
     page,
     perPage = 9,
 }: {
     q: string;
     categorySlug?: string;
+    tagSlug?: string;
     sort: BlogSort;
     page: number;
     perPage?: number;
@@ -207,12 +244,13 @@ export async function searchBlogs({
     await connection();
 
     const where = {
-        ...publishedIn(categorySlug),
+        ...publishedIn(categorySlug, tagSlug),
         ...(q
             ? {
                 OR: [
                     { title: { contains: q, mode: "insensitive" as const } },
                     { description: { contains: q, mode: "insensitive" as const } },
+                    { tags: { some: { name: { contains: q, mode: "insensitive" as const } } } },
                     { category: { name: { contains: q, mode: "insensitive" as const } } },
                 ],
             }

@@ -10,15 +10,18 @@ import { blogsPath, type BlogSort } from "@/lib/blog-utils";
 export function BlogSearchForm({
     q,
     category,
+    tag,
     sort,
 }: {
     q: string;
     category?: string;
+    tag?: string;
     sort: BlogSort;
 }) {
     return (
         <Form action="/blogs" role="search" className="flex w-full max-w-2xl gap-2">
             {category && <input type="hidden" name="category" value={category} />}
+            {tag && <input type="hidden" name="tag" value={tag} />}
             {sort !== "newest" && <input type="hidden" name="sort" value={sort} />}
 
             <div className="border-brand-400 focus-within:ring-brand-400 flex h-12 flex-1 items-center gap-2 rounded-lg border bg-white px-4 focus-within:ring-2">
@@ -38,7 +41,7 @@ export function BlogSearchForm({
                 />
                 {q && (
                     <Link
-                        href={blogsPath({ category, sort })}
+                        href={blogsPath({ category, tag, sort })}
                         aria-label="Clear search"
                         className="text-brand-muted hover:text-brand-900 hover:bg-brand-50 -mr-2 flex size-8 shrink-0 items-center justify-center rounded-md"
                     >

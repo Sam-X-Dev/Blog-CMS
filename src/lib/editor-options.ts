@@ -16,4 +16,36 @@ export const HIGHLIGHT_COLORS = [
  * so what the writer sees is exactly what the reader sees.
  */
 export const BLOG_PROSE_CLASS =
-  "prose prose-brand max-w-none dark:prose-invert prose-h1:text-display prose-h2:text-title prose-h3:text-heading prose-p:text-body prose-li:text-body prose-strong:text-inherit prose-code:text-inherit prose-a:text-brand-600 prose-img:rounded-lg prose-table:my-4 prose-table:border-collapse prose-th:border prose-th:border-brand-200 prose-th:bg-brand-50 prose-th:px-3 prose-th:py-2 prose-td:border prose-td:border-brand-200 prose-td:px-3 prose-td:py-2 dark:prose-th:border-brand-700 dark:prose-th:bg-[#1A120C] dark:prose-td:border-brand-700 [&_td>p]:m-0 [&_th>p]:m-0";
+  "prose prose-brand max-w-none dark:prose-invert prose-h1:text-display prose-h2:text-title prose-h3:text-heading prose-p:text-body prose-li:text-body prose-strong:text-inherit prose-code:text-inherit prose-a:text-brand-600 prose-img:rounded-lg prose-figcaption:text-center prose-figcaption:text-caption [&_img[alt^='Sticker:']]:w-44 [&_img[alt^='Sticker:']]:rounded-none prose-table:my-4 prose-table:border-collapse prose-th:border prose-th:border-brand-200 prose-th:bg-brand-50 prose-th:px-3 prose-th:py-2 prose-td:border prose-td:border-brand-200 prose-td:px-3 prose-td:py-2 dark:prose-th:border-brand-700 dark:prose-th:bg-[#1A120C] dark:prose-td:border-brand-700 [&_td>p]:m-0 [&_th>p]:m-0";
+
+/** Emoji picker in Insert → Emoji. Plain characters, so they work everywhere. */
+export const EMOJI_GROUPS = [
+  {
+    label: "Smileys",
+    items: ["😀", "😃", "😄", "😁", "😆", "😅", "😂", "🤣", "😊", "😇", "🙂", "😉", "😍", "🥰", "😘", "😋", "😎", "🤩", "🥳", "🤔", "🤨", "😐", "😴", "😮", "😢", "😭", "😡", "🤯", "😱", "🥺"],
+  },
+  {
+    label: "Hands",
+    items: ["👍", "👎", "👏", "🙌", "🙏", "🤝", "👋", "✌️", "🤞", "👌", "💪", "👉", "👆", "✍️", "🫶"],
+  },
+  {
+    label: "Objects",
+    items: ["💻", "🖥️", "📱", "⌨️", "🖱️", "💾", "📊", "📈", "📉", "🗂️", "📝", "📌", "📎", "🔗", "🔒", "🔑", "⚙️", "🛠️", "🧪", "📚", "💡", "🔍", "☁️", "🚀"],
+  },
+  {
+    label: "Symbols",
+    items: ["✅", "❌", "⚠️", "❗", "❓", "⭐", "🌟", "✨", "🔥", "💯", "🎉", "🎯", "❤️", "💜", "💙", "💚", "🧡", "💛", "➡️", "⬅️", "⬆️", "⬇️", "🆕", "🆗"],
+  },
+] as const;
+
+/** Stickers in Insert → Sticker. The files live in /public/stickers. */
+export const STICKERS = [
+  { file: "thank-you.svg", label: "Thank you" },
+  { file: "pro-tip.svg", label: "Pro tip" },
+  { file: "must-read.svg", label: "Must read" },
+  { file: "new.svg", label: "New" },
+  { file: "hot-take.svg", label: "Hot take" },
+  { file: "did-you-know.svg", label: "Did you know?" },
+  { file: "well-done.svg", label: "Well done" },
+  { file: "heads-up.svg", label: "Heads up" },
+] as const;

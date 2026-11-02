@@ -5,7 +5,7 @@ import { BlogCard } from "@/components/public/BlogCard";
 import { CategoryChips } from "@/components/public/CategoryChips";
 import { FeaturedBlog } from "@/components/public/FeaturedBlog";
 import { HomeSkeleton } from "@/components/public/HomeSkeleton";
-import { getCategoriesWithBlogs, getLatestBlogs } from "@/lib/queries/public-blogs";
+import { getCategoriesWithBlogs, getHomeBlogs } from "@/lib/queries/public-blogs";
 
 export const metadata: Metadata = {
     title: "BlogCMS | Latest blogs",
@@ -25,11 +25,13 @@ export default function HomePage() {
 }
 
 async function HomeContent() {
-    const [blogs, categories] = await Promise.all([getLatestBlogs(7), getCategoriesWithBlogs()]);
+    // Featured = the admin's pick (Admin → Trending → "Homepage featured"), else the newest blog
+    const [{ featured, latest }, categories] = await Promise.all([
+        getHomeBlogs(6),
+        getCategoriesWithBlogs(),
+    ]);
 
-    if (blogs.length === 0) return <NoBlogsYet />;
-
-    const [featured, ...latest] = blogs;
+    if (!featured) return <NoBlogsYet />;
 
     return (
         <div className="flex flex-col gap-14">

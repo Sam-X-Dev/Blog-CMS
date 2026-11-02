@@ -3,15 +3,17 @@ import { Suspense } from "react";
 import { TrendingToggle } from "@/components/admin/trending/TrendingToggle";
 import { getAdminTrendingList } from "@/lib/queries/admin-trending";
 
-export const metadata: Metadata = { title: "Trending | Admin" };
+export const metadata: Metadata = { title: "Trending & Featured | Admin" };
 
 export default function AdminTrendingPage() {
     return (
         <main className="mx-auto w-full max-w-4xl p-4 sm:p-8">
-            <h1 className="text-brand-900 text-title">Trending</h1>
+            <h1 className="text-brand-900 text-title">Trending &amp; Featured</h1>
             <p className="text-brand-muted mt-1 mb-6 text-small">
                 Turn on a blog to show it under &ldquo;Editor&apos;s picks&rdquo; on the Trending page. The
-                rest of the page is filled by views from the last 7 days.
+                rest of the page is filled by views from the last 7 days. Turn on &ldquo;Homepage
+                featured&rdquo; to show a blog as the big blog on the homepage (the newest one you turn on
+                wins; with none on, the newest blog is shown).
             </p>
             <Suspense fallback={<div className="bg-brand-50 h-64 animate-pulse rounded-xl" />}>
                 <TrendingTable />
@@ -40,6 +42,7 @@ async function TrendingTable() {
                         <th className="px-4 py-3 font-medium">Category</th>
                         <th className="px-4 py-3 text-right font-medium">Views (7 days)</th>
                         <th className="px-4 py-3 text-right font-medium">Editor&apos;s pick</th>
+                        <th className="px-4 py-3 text-right font-medium">Homepage featured</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -52,6 +55,14 @@ async function TrendingTable() {
                             </td>
                             <td className="px-4 py-3 text-right">
                                 <TrendingToggle blogId={row.id} title={row.title} initial={row.isTrending} />
+                            </td>
+                            <td className="px-4 py-3 text-right">
+                                <TrendingToggle
+                                    kind="featured"
+                                    blogId={row.id}
+                                    title={row.title}
+                                    initial={row.isFeatured}
+                                />
                             </td>
                         </tr>
                     ))}

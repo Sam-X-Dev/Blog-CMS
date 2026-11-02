@@ -176,7 +176,7 @@ export function MediaLibrary({ mode = "manage", onPick }: MediaLibraryProps) {
           </button>
         </p>
         <p className="text-brand-muted text-caption">
-          JPG, PNG, WebP, GIF or AVIF · up to {MAX_IMAGE_MB} MB each
+          JPG, JPEG, PNG or WebP · up to {MAX_IMAGE_MB} MB each
         </p>
         <input
           ref={inputRef}

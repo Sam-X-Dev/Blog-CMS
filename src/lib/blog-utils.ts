@@ -64,16 +64,29 @@ export function toSearchText(value: string | string[] | undefined) {
     return (v ?? "").trim().slice(0, 100);
 }
 
-export type BlogsQuery = { q?: string; category?: string; sort?: BlogSort; page?: number };
+/** "?tag=react" -> "react". Missing -> undefined. Only slug characters are kept. */
+export function toSlug(value: string | string[] | undefined) {
+    const v = (Array.isArray(value) ? value[0] : value)?.trim().toLowerCase() ?? "";
+    return /^[a-z0-9-]{1,80}$/.test(v) ? v : undefined;
+}
+
+export type BlogsQuery = {
+    q?: string;
+    category?: string;
+    tag?: string;
+    sort?: BlogSort;
+    page?: number;
+};
 
 /**
  * Link to the all-blogs page with search, filter, sort and page.
  * Leaves out defaults so links stay short: { q: "react" } -> "/blogs?q=react"
  */
-export function blogsPath({ q, category, sort, page }: BlogsQuery = {}) {
+export function blogsPath({ q, category, tag, sort, page }: BlogsQuery = {}) {
     const params = new URLSearchParams();
     if (q) params.set("q", q);
     if (category) params.set("category", category);
+    if (tag) params.set("tag", tag);
     if (sort && sort !== "newest") params.set("sort", sort);
     if (page && page > 1) params.set("page", String(page));
     const query = params.toString();

@@ -41,6 +41,8 @@ export function sanitizeBlogHtml(dirty: string): string {
             "ol",
             "li",
             "img",
+            "figure",
+            "figcaption",
             "table",
             "thead",
             "tbody",

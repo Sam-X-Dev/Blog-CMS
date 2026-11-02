@@ -8,8 +8,8 @@ import { GridSkeleton } from "@/components/public/GridSkeleton";
 import { PageIntro } from "@/components/public/PageIntro";
 import { Pagination } from "@/components/public/Pagination";
 import { SortTabs } from "@/components/public/SortTabs";
-import { blogsPath, toPageNumber, toSearchText, toSort } from "@/lib/blog-utils";
-import { getCategoriesWithBlogs, searchBlogs } from "@/lib/queries/public-blogs";
+import { blogsPath, toPageNumber, toSearchText, toSlug, toSort } from "@/lib/blog-utils";
+import { getCategoriesWithBlogs, getTagBySlug, searchBlogs } from "@/lib/queries/public-blogs";
 
 type Props = PageProps<"/blogs">;
 
@@ -28,7 +28,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
 export default function BlogsPage({ searchParams }: Props) {
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-4 py-10 sm:px-6 sm:py-14">
-      <PageIntro title="All blogs" subtitle="Search by title, topic or category." />
+      <PageIntro title="All blogs" subtitle="Search by title, topic, tag or category." />
       <Suspense fallback={<BlogsSkeleton />}>
         <BlogsContent searchParams={searchParams} />
       </Suspense>
@@ -42,24 +42,50 @@ async function BlogsContent({ searchParams }: Pick<Props, "searchParams">) {
   const sort = toSort(params.sort);
   const page = toPageNumber(params.page);
 
-  const categories = await getCategoriesWithBlogs();
-  // Ignore a category that doesn't exist (or has no blogs) instead of showing nothing
+  const rawTag = toSlug(params.tag);
+  const [categories, activeTag] = await Promise.all([
+    getCategoriesWithBlogs(),
+    rawTag ? getTagBySlug(rawTag) : Promise.resolve(null),
+  ]);
+  // Ignore a category or tag that doesn't exist instead of showing nothing
   const rawCategory = Array.isArray(params.category) ? params.category[0] : params.category;
   const activeCategory = categories.find((c) => c.slug === rawCategory);
   const category = activeCategory?.slug;
+  const tag = activeTag?.slug;
 
-  const { blogs, total, totalPages } = await searchBlogs({ q, categorySlug: category, sort, page });
+  const { blogs, total, totalPages } = await searchBlogs({
+    q,
+    categorySlug: category,
+    tagSlug: tag,
+    sort,
+    page,
+  });
 
   return (
     <>
       <div className="flex flex-col gap-5">
-        <BlogSearchForm q={q} category={category} sort={sort} />
+        <BlogSearchForm q={q} category={category} tag={tag} sort={sort} />
         {categories.length > 0 && (
           <CategoryTabs
             categories={categories}
             active={category}
-            hrefFor={(slug) => blogsPath({ q, category: slug, sort })}
+            hrefFor={(slug) => blogsPath({ q, category: slug, tag, sort })}
           />
+        )}
+        {activeTag && (
+          <p className="text-small text-brand-muted flex flex-wrap items-center gap-2">
+            Tagged
+            <span className="bg-brand-100 text-brand-900 inline-flex items-center gap-2 rounded-full px-3 py-1 font-medium">
+              #{activeTag.name}
+              <Link
+                href={blogsPath({ q, category, sort })}
+                aria-label={`Remove tag ${activeTag.name}`}
+                className="hover:text-brand-600"
+              >
+                ×
+              </Link>
+            </span>
+          </p>
         )}
       </div>
 
@@ -67,7 +93,7 @@ async function BlogsContent({ searchParams }: Pick<Props, "searchParams">) {
         <p className="text-brand-900 text-body" aria-live="polite">
           <ResultLine total={total} q={q} categoryName={activeCategory?.name} />
         </p>
-        {total > 1 && <SortTabs q={q} category={category} sort={sort} />}
+        {total > 1 && <SortTabs q={q} category={category} tag={tag} sort={sort} />}
       </div>
 
       {blogs.length > 0 ? (
@@ -81,15 +107,15 @@ async function BlogsContent({ searchParams }: Pick<Props, "searchParams">) {
           q={q}
           categoryName={activeCategory?.name}
           pageTooFar={total > 0}
-          firstPage={blogsPath({ q, category, sort })}
-          clearSearch={blogsPath({ category, sort })}
+          firstPage={blogsPath({ q, category, tag, sort })}
+          clearSearch={blogsPath({ category, tag, sort })}
         />
       )}
 
       <Pagination
         page={page}
         totalPages={totalPages}
-        hrefFor={(n) => blogsPath({ q, category, sort, page: n })}
+        hrefFor={(n) => blogsPath({ q, category, tag, sort, page: n })}
       />
     </>
   );

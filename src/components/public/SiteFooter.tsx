@@ -20,6 +20,7 @@ const EXPLORE = [
   { href: blogsPath(), label: "All blogs" },
   { href: "/categories", label: "Categories" },
   { href: "/trending", label: "Trending" },
+  { href: "/about", label: "About" },
 ];
 
 const linkClass = "hover:text-brand-900 transition-colors";

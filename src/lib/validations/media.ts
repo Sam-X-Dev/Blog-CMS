@@ -9,7 +9,7 @@ export const saveMediaSchema = z.object({
     .string()
     .trim()
     .toLowerCase()
-    .regex(/^[a-z0-9]{2,5}$/, { error: "Unknown image format" }),
+    .regex(/^(jpg|jpeg|png|webp)$/, { error: "Only JPG, JPEG, PNG and WebP images are allowed" }),
   width: z.number().int().positive().max(20000).optional(),
   height: z.number().int().positive().max(20000).optional(),
   bytes: z.number().int().positive().optional(),

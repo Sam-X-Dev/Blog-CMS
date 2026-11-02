@@ -18,6 +18,23 @@
   --tw-prose-pre-bg: #2B1E14;
   --tw-prose-th-borders: #CCBEB1;
   --tw-prose-td-borders: #CCBEB1;
+  /* Dark mode (used by dark:prose-invert) */
+  --tw-prose-invert-body: #E8DCD1;
+  --tw-prose-invert-headings: #FBF4EE;
+  --tw-prose-invert-lead: #E8DCD1;
+  --tw-prose-invert-links: #FFDBBB;
+  --tw-prose-invert-bold: #FBF4EE;
+  --tw-prose-invert-counters: #CCBEB1;
+  --tw-prose-invert-bullets: #997E67;
+  --tw-prose-invert-hr: #4A3628;
+  --tw-prose-invert-quotes: #FBF4EE;
+  --tw-prose-invert-quote-borders: #997E67;
+  --tw-prose-invert-captions: #CCBEB1;
+  --tw-prose-invert-code: #FFDBBB;
+  --tw-prose-invert-pre-code: #FFDBBB;
+  --tw-prose-invert-pre-bg: #120C08;
+  --tw-prose-invert-th-borders: #4A3628;
+  --tw-prose-invert-td-borders: #4A3628;
 }
 
 @theme {
@@ -37,12 +54,27 @@
   --foreground: #2B1E14;
 }
 
+/* Dark mode: the same palette, flipped. Because every component uses bg-white and the
+   brand-* colours, flipping these variables is enough; no dark: class is needed per component.
+   The class "dark" is put on <html> by ThemeToggle (and before first paint by the script in layout.tsx). */
 .dark {
+  color-scheme: dark;
   --background: #1A120C;
   --foreground: #FBF4EE;
+  --color-white: #221810; /* cards, header, inputs */
+  --color-brand-50: #2B1F16; /* soft surfaces, footer */
+  --color-brand-100: #4A3628; /* chips, active states */
+  --color-brand-200: #3D2D21; /* borders */
+  --color-brand-400: #B39A84;
+  --color-brand-600: #FFDBBB; /* links and main buttons */
+  --color-brand-700: #F5C9A3;
+  --color-brand-muted: #CCBEB1;
+  --color-brand-900: #FBF4EE; /* main text */
 }
 
 body {
+  background: var(--background);
+  color: var(--foreground);
   font-size: var(--text-body);
   line-height: var(--text-body--line-height);
 }

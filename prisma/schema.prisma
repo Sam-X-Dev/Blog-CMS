@@ -33,6 +33,7 @@ model Blog {
   status      BlogStatus @default(DRAFT)
   publishedAt DateTime?
   isTrending  Boolean    @default(false) // admin pick for the Trending page (Abhishek)
+  isFeatured  Boolean    @default(false) // admin pick for the homepage hero (Abhishek)
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
 
@@ -43,6 +44,7 @@ model Blog {
 
   @@index([status, publishedAt])
   @@index([categoryId])
+  @@index([isFeatured])
 }
 
 

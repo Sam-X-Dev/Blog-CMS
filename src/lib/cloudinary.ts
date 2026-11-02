@@ -5,7 +5,9 @@ import type { UploadSignature } from "@/types/media";
 /** Every upload goes into this Cloudinary folder, so the project's images stay together */
 export const MEDIA_FOLDER = "blog-cms";
 /** Cloudinary itself refuses any other file type (the list is part of the signature) */
-export const ALLOWED_FORMATS = "jpg,jpeg,png,webp,gif,avif";
+export const ALLOWED_FORMATS = "jpg,jpeg,png,webp";
+/** Same list as MIME types, for uploads that come through our own server (/api/upload) */
+export const ALLOWED_MIME_TYPES = ["image/jpeg", "image/png", "image/webp"];
 /** 10 MB, the Cloudinary free plan limit for one image */
 export const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
 
@@ -79,4 +81,45 @@ export async function deleteImage(publicId: string) {
   if (result.result !== "ok" && result.result !== "not found") {
     throw new Error(`Cloudinary could not delete ${publicId}: ${result.result}`);
   }
+}
+
+export type UploadedImage = {
+  publicId: string;
+  url: string;
+  width?: number;
+  height?: number;
+  format: string;
+  bytes?: number;
+};
+
+/**
+ * Uploads a file that came to OUR server (used by POST /api/upload).
+ * The browser-direct upload (/api/media/sign) is still the main way; this one is the simple route.
+ */
+export async function uploadImageBuffer(buffer: Buffer): Promise<UploadedImage> {
+  if (!getConfig()) throw new Error("Cloudinary is not configured");
+
+  const result = await new Promise<{
+    public_id: string;
+    secure_url: string;
+    width?: number;
+    height?: number;
+    format: string;
+    bytes?: number;
+  }>((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      { folder: MEDIA_FOLDER, resource_type: "image", allowed_formats: ALLOWED_FORMATS.split(",") },
+      (error, res) => (error || !res ? reject(error ?? new Error("Upload failed")) : resolve(res))
+    );
+    stream.end(buffer);
+  });
+
+  return {
+    publicId: result.public_id,
+    url: result.secure_url,
+    width: result.width,
+    height: result.height,
+    format: result.format,
+    bytes: result.bytes,
+  };
 }

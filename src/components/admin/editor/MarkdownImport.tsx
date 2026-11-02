@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import type { Editor } from "@tiptap/react";
 import { FileUp, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { ApiError } from "@/lib/api-client";
 import { IMPORT_ACCEPT, IMPORT_GROUPS, ImportError, fileToHtml } from "@/lib/import-file";
 
 export type ImportedMeta = { title?: string; description?: string };
@@ -46,7 +47,7 @@ export function MarkdownImport({ editor, onImport }: MarkdownImportProps) {
             onImport?.({ title, description });
             toast.success(`Imported "${file.name}". Press Ctrl/⌘+Z to undo.`, { description: note });
         } catch (err) {
-            toast.error(err instanceof ImportError ? err.message : "Could not read this file", {
+            toast.error(err instanceof ImportError || err instanceof ApiError ? err.message : "Could not read this file", {
                 description: `Supported: ${SUPPORTED}`,
             });
         } finally {

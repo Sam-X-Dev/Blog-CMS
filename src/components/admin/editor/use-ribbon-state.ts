@@ -41,6 +41,8 @@ export function useRibbonState(editor: Editor) {
                 link: e.isActive("link"),
                 linkHref: (e.getAttributes("link").href as string | undefined) ?? "",
                 inTable: e.isActive("table"),
+                imageSelected: e.isActive("figure") || e.isActive("image"),
+                caption: (e.getAttributes("figure").caption as string | undefined) ?? "",
                 canMergeOrSplit: e.can().mergeOrSplit(),
                 canUndo: e.can().undo(),
                 canRedo: e.can().redo(),

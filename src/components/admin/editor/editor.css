@@ -29,7 +29,18 @@
 
 /* Outline around a clicked image or divider */
 .blog-editor .ProseMirror img.ProseMirror-selectednode,
+.blog-editor .ProseMirror figure.ProseMirror-selectednode img,
 .blog-editor .ProseMirror hr.ProseMirror-selectednode {
     outline: 3px solid var(--color-brand-400, #997e67);
     outline-offset: 2px;
+}
+
+/* Pictures with a caption: keep the caption close to the picture */
+.blog-editor .ProseMirror figure img {
+    margin-bottom: 0.5rem;
+}
+
+/* Stickers stay small (they are inserted as plain pictures with this alt prefix) */
+.blog-editor .ProseMirror img[alt^="Sticker:"] {
+    width: 180px;
 }

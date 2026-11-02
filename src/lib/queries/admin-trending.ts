@@ -9,6 +9,7 @@ export type AdminTrendingRow = {
     slug: string;
     category: string | null;
     isTrending: boolean;
+    isFeatured: boolean;
     weekViews: number;
 };
 
@@ -25,6 +26,7 @@ export async function getAdminTrendingList(): Promise<AdminTrendingRow[]> {
                 title: true,
                 slug: true,
                 isTrending: true,
+                isFeatured: true,
                 category: { select: { name: true } },
             },
         }),

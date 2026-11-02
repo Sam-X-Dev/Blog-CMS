@@ -7,6 +7,7 @@ import Superscript from "@tiptap/extension-superscript";
 import Image from "@tiptap/extension-image";
 import { TableKit } from "@tiptap/extension-table";
 import { CharacterCount, Placeholder } from "@tiptap/extensions";
+import { Figure } from "./figure";
 
 /** Everything the blog editor can do. Anything not listed here is removed from pasted/imported content. */
 export function createExtensions(placeholder: string) {
@@ -27,6 +28,7 @@ export function createExtensions(placeholder: string) {
         Subscript,
         Superscript,
         Image,
+        Figure,
         TableKit.configure({ table: { resizable: false } }),
         CharacterCount,
         Placeholder.configure({ placeholder }),

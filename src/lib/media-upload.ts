@@ -4,13 +4,13 @@ import { apiFetch } from "@/lib/api-client";
 import type { MediaItem, UploadSignature } from "@/types/media";
 
 /** For <input type="file" accept={IMAGE_ACCEPT}> */
-export const IMAGE_ACCEPT = "image/jpeg,image/png,image/webp,image/gif,image/avif";
+export const IMAGE_ACCEPT = "image/jpeg,image/png,image/webp";
 export const MAX_IMAGE_MB = 10;
 
 /** Returns a friendly problem message, or null if the file is fine to upload. */
 export function checkImageFile(file: File): string | null {
   if (!IMAGE_ACCEPT.split(",").includes(file.type)) {
-    return `"${file.name}" isn't a supported image. Use JPG, PNG, WebP, GIF or AVIF.`;
+    return `"${file.name}" isn't a supported image. Use JPG, JPEG, PNG or WebP.`;
   }
   if (file.size > MAX_IMAGE_MB * 1024 * 1024) {
     return `"${file.name}" is larger than ${MAX_IMAGE_MB} MB.`;
