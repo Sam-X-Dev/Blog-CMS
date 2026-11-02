@@ -111,6 +111,58 @@ export async function getHomeBlogs(latestCount = 6): Promise<{
     return { featured: featured ? toCard(featured) : null, latest: latest.map(toCard) };
 }
 
+/**
+ * One published blog for its own page, or null (drafts and unknown slugs → 404).
+ * cache(): the page and its <title> both ask for it, the database is hit once per visit.
+ */
+export const getPublishedBlog = cache(async (slug: string) => {
+    await connection();
+    const blog = await prisma.blog.findFirst({
+        where: { slug, status: "PUBLISHED" },
+        select: {
+            id: true,
+            title: true,
+            slug: true,
+            description: true,
+            content: true,
+            thumbnail: true,
+            publishedAt: true,
+            updatedAt: true,
+            category: { select: { name: true, slug: true } },
+            tags: { select: { name: true, slug: true }, orderBy: { name: "asc" } },
+        },
+    });
+    return blog ? { ...blog, readMinutes: readingTime(blog.content) } : null;
+});
+
+/** "Keep reading": newest blogs from the same category, topped up with the newest overall. */
+export async function getRelatedBlogs(
+    blogId: string,
+    categorySlug?: string,
+    limit = 3,
+): Promise<BlogCardData[]> {
+    await connection();
+    const sameCategory = categorySlug
+        ? await prisma.blog.findMany({
+            where: { ...publishedIn(categorySlug), id: { not: blogId } },
+            orderBy: [...NEWEST_FIRST],
+            take: limit,
+            select: CARD_SELECT,
+        })
+        : [];
+    const missing = limit - sameCategory.length;
+    const others =
+        missing > 0
+            ? await prisma.blog.findMany({
+                where: { ...publishedIn(), id: { notIn: [blogId, ...sameCategory.map((b) => b.id)] } },
+                orderBy: [...NEWEST_FIRST],
+                take: missing,
+                select: CARD_SELECT,
+            })
+            : [];
+    return [...sameCategory, ...others].map(toCard);
+}
+
 /** A tag by its slug (for the "tagged ..." filter on /blogs). Null if it doesn't exist. */
 export async function getTagBySlug(slug: string) {
     return prisma.tag.findUnique({ where: { slug }, select: { name: true, slug: true } });
