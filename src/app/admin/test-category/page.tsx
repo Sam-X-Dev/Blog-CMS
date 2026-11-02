@@ -8,7 +8,7 @@ export default function TestCategoryPage() {
     return (
         <div className="mx-auto max-w-md p-8">
             <CategorySelect value={categoryId} onChange={setCategoryId} />
-            <p className="mt-4 text-sm text-gray-500">Selected id: {categoryId || "none"}</p>
+            <p className="mt-4 text-small text-brand-muted">Selected id: {categoryId || "none"}</p>
         </div>
     );
 }

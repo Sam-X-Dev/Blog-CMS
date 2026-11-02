@@ -64,7 +64,7 @@ export function CategorySelect({
 
   return (
     <div className="w-full space-y-1.5">
-      <label htmlFor={id} className="block text-small font-medium text-brand-700 dark:text-brand-50">
+      <label htmlFor={id} className="block text-small font-medium text-brand-700">
         Category
         {required && <span className="ml-1 text-red-500">*</span>}
       </label>
@@ -76,9 +76,9 @@ export function CategorySelect({
           disabled={disabled || isLoading}
           required={required}
           onChange={(e) => onChange(e.target.value)}
-          className={`w-full rounded-lg border px-3.5 py-2.5 text-small text-brand-900 transition focus:ring-2 focus:outline-hidden dark:bg-[#1A120C] dark:text-brand-50 ${error
-              ? "border-red-500 focus:border-red-500 focus:ring-red-200 dark:border-red-600 dark:focus:ring-red-950"
-              : "border-brand-400 focus:border-brand-600 focus:ring-brand-400/20 dark:border-brand-400 dark:focus:border-brand-400 dark:focus:ring-brand-400/20"
+          className={`w-full rounded-lg border px-3.5 py-2.5 text-small text-brand-900 transition focus:ring-2 focus:outline-hidden ${error
+              ? "border-red-500 focus:border-red-500 focus:ring-red-200 dark:border-red-600"
+              : "border-brand-400 focus:border-brand-600 focus:ring-brand-400/20"
             } ${disabled ? "cursor-not-allowed opacity-60" : ""}`}
         >
           {isLoading ? (
@@ -98,11 +98,11 @@ export function CategorySelect({
       </div>
 
       {!isLoading && !fetchError && categories.length === 0 && (
-        <p className="text-caption text-brand-muted dark:text-brand-50">
+        <p className="text-caption text-brand-muted">
           No categories yet.{" "}
           <Link
             href="/admin/categories"
-            className="font-medium text-brand-600 underline hover:text-brand-900 dark:text-brand-100 dark:hover:text-brand-50"
+            className="font-medium text-brand-600 underline hover:text-brand-900"
           >
             Add one in Admin -&gt; Categories.
           </Link>

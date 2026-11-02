@@ -33,8 +33,8 @@ export default function EditorTestPage() {
             .split(/\s+/)
             .filter(Boolean).length;
         return (
-            <div className="min-h-screen w-full bg-white dark:bg-zinc-950">
-                <div className="sticky top-0 z-10 border-b border-zinc-200 bg-amber-50 px-4 py-2 text-center text-caption text-amber-800">
+            <div className="min-h-screen w-full bg-white">
+                <div className="sticky top-0 z-10 border-b border-brand-200 bg-brand-100 px-4 py-2 text-center text-caption text-brand-900">
                     Test preview of the public blog page ·{" "}
                     <button onClick={() => setPublished(false)} className="font-semibold underline">
                         Back to editor
@@ -42,12 +42,12 @@ export default function EditorTestPage() {
                 </div>
 
                 <article className="mx-auto w-full max-w-3xl px-4 py-12 sm:py-16">
-                    <p className="text-small font-medium text-indigo-600">Technology</p>
-                    <h1 className="mt-2 text-display text-zinc-900 dark:text-zinc-50">
+                    <p className="text-small font-medium text-brand-600">Technology</p>
+                    <h1 className="mt-2 text-display text-brand-900">
                         {title || "Untitled blog"}
                     </h1>
-                    {description && <p className="mt-4 text-body text-zinc-600">{description}</p>}
-                    <p className="mt-6 border-b border-zinc-200 pb-6 text-small text-zinc-500">
+                    {description && <p className="mt-4 text-body text-brand-muted">{description}</p>}
+                    <p className="mt-6 border-b border-brand-200 pb-6 text-small text-brand-muted">
                         {new Date().toLocaleDateString("en-IN", {
                             day: "numeric",
                             month: "long",
@@ -78,13 +78,13 @@ export default function EditorTestPage() {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Title"
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-heading"
+                className="w-full rounded-lg border border-brand-400 bg-white px-3 py-2 text-heading text-brand-900 placeholder:text-brand-muted"
             />
             <input
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Description"
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-small"
+                className="w-full rounded-lg border border-brand-400 bg-white px-3 py-2 text-small text-brand-900 placeholder:text-brand-muted"
             />
             {/* Same field Samarth adds to the real blog form */}
             <ImagePicker value={thumbnail || null} onChange={(url) => setThumbnail(url ?? "")} />
@@ -98,7 +98,7 @@ export default function EditorTestPage() {
                 }}
             />
             <div className="flex items-center justify-between gap-4">
-                <p className="text-caption text-gray-500" aria-live="polite">
+                <p className="text-caption text-brand-muted" aria-live="polite">
                     {savedAt
                         ? `Draft saved on this device at ${new Date(savedAt).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" })}`
                         : "Start typing: your draft is saved on this device automatically"}
@@ -121,17 +121,17 @@ export default function EditorTestPage() {
             </div>
             <div className="flex items-center justify-between gap-4">
                 <details className="text-caption">
-                    <summary className="cursor-pointer text-gray-500">
+                    <summary className="cursor-pointer text-brand-muted">
                         Saved HTML ({content.length} characters)
                     </summary>
-                    <pre className="mt-2 overflow-auto rounded bg-gray-100 p-3 whitespace-pre-wrap">
+                    <pre className="mt-2 overflow-auto rounded bg-brand-50 p-3 whitespace-pre-wrap text-brand-900">
                         {content}
                     </pre>
                 </details>
                 <button
                     onClick={() => setPublished(true)}
                     disabled={!content}
-                    className="shrink-0 rounded-lg bg-gray-900 px-4 py-2 text-small font-medium text-white hover:bg-gray-700 disabled:opacity-40"
+                    className="shrink-0 rounded-lg bg-brand-600 px-4 py-2 text-small font-medium text-white hover:bg-brand-700 disabled:opacity-40"
                 >
                     See as published blog
                 </button>

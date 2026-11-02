@@ -50,12 +50,12 @@ export function ConfirmDialog({
       }}
     >
       <div
-        className="w-full max-w-md rounded-xl border border-brand-200 bg-white p-6 shadow-2xl transition-all dark:border-brand-700 dark:bg-[#1A120C]"
+        className="w-full max-w-md rounded-xl border border-brand-200 bg-white p-6 shadow-2xl transition-all"
         onClick={(e) => e.stopPropagation()}
       >
         <h2
           id="confirm-dialog-title"
-          className="text-heading text-brand-900 dark:text-brand-50"
+          className="text-heading text-brand-900"
         >
           {title}
         </h2>
@@ -63,7 +63,7 @@ export function ConfirmDialog({
         {description && (
           <p
             id="confirm-dialog-description"
-            className="mt-2 text-small text-brand-700 dark:text-brand-50"
+            className="mt-2 text-small text-brand-700"
           >
             {description}
           </p>
@@ -74,7 +74,7 @@ export function ConfirmDialog({
             type="button"
             disabled={loading}
             onClick={onCancel}
-            className="rounded-lg border border-brand-400 bg-white px-4 py-2 text-small font-medium text-brand-900 transition hover:bg-brand-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-brand-700 dark:bg-[#1A120C] dark:text-brand-50 dark:hover:bg-brand-900"
+            className="rounded-lg border border-brand-400 bg-white px-4 py-2 text-small font-medium text-brand-900 transition hover:bg-brand-50 disabled:cursor-not-allowed disabled:opacity-50"
           >
             Cancel
           </button>
