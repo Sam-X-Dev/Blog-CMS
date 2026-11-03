@@ -4,7 +4,7 @@ import { fail, handleApiError, ok } from "@/lib/api-response";
 
 const featuredSchema = z.object({ isFeatured: z.boolean() });
 
-// PATCH /api/featured/:id — admin only (protected by Samarth's proxy.ts)
+// PATCH /api/featured/:id — admin (login check: Samarth)
 // Body: { isFeatured: true | false }. The newest featured blog becomes the homepage hero.
 export async function PATCH(request: Request, ctx: RouteContext<"/api/featured/[id]">) {
   const { id } = await ctx.params;

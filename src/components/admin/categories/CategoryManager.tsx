@@ -226,14 +226,14 @@ export function CategoryManager() {
 
       {/* Category List */}
       <section className="overflow-hidden rounded-xl border border-brand-200 bg-white shadow-xs">
-        <div className="border-b border-brand-200 px-6 py-4">
+        <div className="border-b border-brand-200 px-4 sm:px-6 py-4">
           <h2 className="text-body font-semibold text-brand-900">
             All Categories
           </h2>
         </div>
 
         {isLoading ? (
-          <div className="flex flex-col items-center justify-center px-6 py-16 text-center">
+          <div className="flex flex-col items-center justify-center px-4 sm:px-6 py-16 text-center">
             <svg
               className="h-8 w-8 animate-spin text-brand-400"
               xmlns="http://www.w3.org/2000/svg"
@@ -257,7 +257,7 @@ export function CategoryManager() {
             <p className="mt-4 text-small text-brand-muted">Loading categories...</p>
           </div>
         ) : fetchError ? (
-          <div className="flex flex-col items-center justify-center px-6 py-16 text-center">
+          <div className="flex flex-col items-center justify-center px-4 sm:px-6 py-16 text-center">
             <p className="text-small font-medium text-red-600 dark:text-red-400">{fetchError}</p>
             <button
               type="button"
@@ -268,7 +268,7 @@ export function CategoryManager() {
             </button>
           </div>
         ) : categories.length === 0 ? (
-          <div className="px-6 py-16 text-center">
+          <div className="px-4 sm:px-6 py-16 text-center">
             <p className="text-small text-brand-muted">
               No categories yet. Create your first category above.
             </p>
@@ -278,16 +278,16 @@ export function CategoryManager() {
             <table className="min-w-full divide-y divide-brand-200">
               <thead className="bg-brand-50 text-left text-caption font-medium tracking-wider text-brand-muted uppercase">
                 <tr>
-                  <th scope="col" className="px-6 py-3.5">
+                  <th scope="col" className="px-4 sm:px-6 py-3.5">
                     Name
                   </th>
-                  <th scope="col" className="hidden px-6 py-3.5 sm:table-cell">
+                  <th scope="col" className="hidden px-4 sm:px-6 py-3.5 sm:table-cell">
                     Slug
                   </th>
-                  <th scope="col" className="px-6 py-3.5">
+                  <th scope="col" className="px-4 sm:px-6 py-3.5">
                     Blogs
                   </th>
-                  <th scope="col" className="px-6 py-3.5 text-right">
+                  <th scope="col" className="px-4 sm:px-6 py-3.5 text-right">
                     Actions
                   </th>
                 </tr>
@@ -298,18 +298,18 @@ export function CategoryManager() {
                     key={category.id}
                     className="transition hover:bg-brand-50"
                   >
-                    <td className="px-6 py-4 font-medium whitespace-nowrap text-brand-900">
+                    <td className="px-4 sm:px-6 py-4 font-medium whitespace-nowrap text-brand-900">
                       {category.name}
                     </td>
-                    <td className="hidden px-6 py-4 text-caption whitespace-nowrap text-brand-muted sm:table-cell">
+                    <td className="hidden px-4 sm:px-6 py-4 text-caption whitespace-nowrap text-brand-muted sm:table-cell">
                       {category.slug}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-brand-700">
+                    <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-brand-700">
                       <span className="inline-flex items-center rounded-full bg-brand-100 px-2.5 py-0.5 text-caption font-medium text-brand-900">
                         {category._count?.blogs ?? 0}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-right whitespace-nowrap">
+                    <td className="px-4 sm:px-6 py-4 text-right whitespace-nowrap">
                       <div className="flex items-center justify-end gap-3">
                         <button
                           type="button"

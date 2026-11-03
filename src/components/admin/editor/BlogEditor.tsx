@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import type { BlogEditorProps } from "./EditorCore";
 
 /**
- * Office-style blog editor (Home / Insert / View / Table ribbon, Markdown import, preview).
+ * Office-style blog editor (Home / Insert / View / Table ribbon, Markdown import).
  * It runs only in the browser (the editor can't be pre-rendered on the server).
  *
  * Usage in the Create/Edit Blog form (Samarth):

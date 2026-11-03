@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Geist_Mono, Inter } from "next/font/google";
-import { Suspense } from "react";
 import { Toaster } from "sonner";
-import { FloatingThemeToggle } from "@/components/ui/FloatingThemeToggle";
 import "./globals.css";
 
 // One font for the whole website (Inter). Geist Mono is only for code blocks.
@@ -34,10 +32,6 @@ export default function RootLayout({
       </head>
       <body className="flex min-h-full flex-col">
         {children}
-        {/* Theme button on admin pages (public pages have it in the header) */}
-        <Suspense fallback={null}>
-          <FloatingThemeToggle />
-        </Suspense>
         <Toaster richColors position="top-right" />
       </body>
     </html>

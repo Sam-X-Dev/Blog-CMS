@@ -34,6 +34,8 @@ model Blog {
   publishedAt DateTime?
   isTrending  Boolean    @default(false) // admin pick for the Trending page (Abhishek)
   isFeatured  Boolean    @default(false) // admin pick for the homepage hero (Abhishek)
+  seoTitle       String? // optional <title> for search engines (falls back to the title)
+  seoDescription String? // optional meta description (falls back to the description)
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
 

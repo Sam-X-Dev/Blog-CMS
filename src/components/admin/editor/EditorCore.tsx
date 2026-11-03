@@ -3,7 +3,6 @@
 import "./editor.css";
 import { useEffect, useRef, useState } from "react";
 import { EditorContent, useEditor, type Editor } from "@tiptap/react";
-import { BlogContent } from "@/components/blog/BlogContent";
 import { BLOG_PROSE_CLASS } from "@/lib/editor-options";
 import { createExtensions } from "./extensions";
 import { uploadIntoEditor } from "./image-upload";
@@ -100,7 +99,6 @@ function EditorShell({
   error?: string;
 }) {
   const s = useRibbonState(editor);
-  const [mode, setMode] = useState<"write" | "preview">("write");
   const [fullscreen, setFullscreen] = useState(false);
 
   // Esc leaves full screen
@@ -123,8 +121,6 @@ function EditorShell({
         <Ribbon
           editor={editor}
           s={s}
-          mode={mode}
-          onModeChange={setMode}
           fullscreen={fullscreen}
           onToggleFullscreen={() => setFullscreen((f) => !f)}
           onImport={onImport}
@@ -137,45 +133,23 @@ function EditorShell({
           }`}
           onMouseDown={(e) => {
             // Clicking the grey area around the page puts the cursor at the end
-            if (mode === "write" && e.target === e.currentTarget) {
+            if (e.target === e.currentTarget) {
               e.preventDefault();
               editor.commands.focus("end");
             }
           }}
         >
           <div className="ring-brand-200 mx-auto w-full max-w-[816px] rounded-md bg-white px-6 py-10 shadow-sm ring-1 sm:px-16 sm:py-14">
-            {mode === "write" ? (
-              <EditorContent editor={editor} />
-            ) : editor.isEmpty ? (
-              <p className="text-small text-brand-muted">Nothing to preview yet.</p>
-            ) : (
-              <BlogContent html={editor.getHTML()} />
-            )}
+            <EditorContent editor={editor} />
           </div>
         </div>
 
         {/* Status bar */}
-        <div className="border-brand-200 bg-brand-50 text-caption text-brand-muted flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-t px-4 py-2">
+        <div className="border-brand-200 bg-brand-50 text-caption text-brand-muted flex flex-wrap items-center gap-x-4 gap-y-2 border-t px-4 py-2.5">
           <span>
             {s.words.toLocaleString("en-IN")} words · {s.characters.toLocaleString("en-IN")}{" "}
             characters · {readingMinutes} min read
           </span>
-          <div className="border-brand-200 flex gap-0.5 rounded-md border bg-white p-0.5">
-            {(["write", "preview"] as const).map((m) => (
-              <button
-                key={m}
-                type="button"
-                onClick={() => setMode(m)}
-                className={`rounded px-3 py-1 font-medium capitalize transition-colors ${
-                  mode === m
-                    ? "bg-brand-600 text-white"
-                    : "text-brand-muted hover:bg-brand-50 hover:text-brand-900"
-                }`}
-              >
-                {m}
-              </button>
-            ))}
-          </div>
         </div>
       </div>
 

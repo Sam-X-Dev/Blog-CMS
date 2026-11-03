@@ -13,7 +13,7 @@ export default function CategoriesPage() {
     return (
         <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-4 py-10 sm:px-6 sm:py-14">
             <PageIntro title="Categories" subtitle="Pick a topic to see all its blogs." />
-            <Suspense fallback={<div className="bg-brand-50 h-12 max-w-md animate-pulse rounded-lg" />}>
+            <Suspense fallback={<div className="bg-brand-50 h-64 animate-pulse rounded-xl" />}>
                 <CategoryList />
             </Suspense>
         </div>

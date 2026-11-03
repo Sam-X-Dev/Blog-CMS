@@ -19,13 +19,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const blog = await getPublishedBlog(slug);
   if (!blog) return { title: "Blog not found | BlogCMS" };
 
+  // SEO fields from the admin form win; otherwise the normal title and description are used
+  const title = blog.seoTitle || blog.title;
+  const description = blog.seoDescription || blog.description;
   return {
-    title: `${blog.title} | BlogCMS`,
-    description: blog.description,
+    title: `${title} | BlogCMS`,
+    description,
+    alternates: { canonical: `/blog/${blog.slug}` },
     openGraph: {
       type: "article",
-      title: blog.title,
-      description: blog.description,
+      title,
+      description,
       publishedTime: blog.publishedAt?.toISOString(),
       // Social apps need a full https link, so local /thumbnails files are left out
       images: blog.thumbnail?.startsWith("https://") ? [blog.thumbnail] : undefined,

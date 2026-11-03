@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { BlogCard } from "@/components/public/BlogCard";
-import { BlogSearchForm } from "@/components/public/BlogSearchForm";
 import { CategoryTabs } from "@/components/public/CategoryTabs";
 import { GridSkeleton } from "@/components/public/GridSkeleton";
 import { PageIntro } from "@/components/public/PageIntro";
@@ -28,7 +27,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
 export default function BlogsPage({ searchParams }: Props) {
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-4 py-10 sm:px-6 sm:py-14">
-      <PageIntro title="All blogs" subtitle="Search by title, topic, tag or category." />
+      <PageIntro title="All blogs" subtitle="Every published blog. Use the search at the top to find a topic." />
       <Suspense fallback={<BlogsSkeleton />}>
         <BlogsContent searchParams={searchParams} />
       </Suspense>
@@ -64,7 +63,6 @@ async function BlogsContent({ searchParams }: Pick<Props, "searchParams">) {
   return (
     <>
       <div className="flex flex-col gap-5">
-        <BlogSearchForm q={q} category={category} tag={tag} sort={sort} />
         {categories.length > 0 && (
           <CategoryTabs
             categories={categories}
@@ -90,9 +88,19 @@ async function BlogsContent({ searchParams }: Pick<Props, "searchParams">) {
       </div>
 
       <div className="border-brand-200 flex flex-wrap items-center justify-between gap-x-6 gap-y-3 border-b pb-4">
-        <p className="text-brand-900 text-body" aria-live="polite">
-          <ResultLine total={total} q={q} categoryName={activeCategory?.name} />
-        </p>
+        <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+          <p className="text-brand-900 text-body" aria-live="polite">
+            <ResultLine total={total} q={q} categoryName={activeCategory?.name} />
+          </p>
+          {q && (
+            <Link
+              href={blogsPath({ category, tag, sort })}
+              className="text-brand-600 text-small font-semibold hover:underline"
+            >
+              Clear search
+            </Link>
+          )}
+        </div>
         {total > 1 && <SortTabs q={q} category={category} tag={tag} sort={sort} />}
       </div>
 

@@ -7,7 +7,7 @@ export const metadata: Metadata = { title: "Trending & Featured | Admin" };
 
 export default function AdminTrendingPage() {
     return (
-        <main className="mx-auto w-full max-w-4xl p-4 sm:p-8">
+        <main className="mx-auto w-full max-w-6xl p-4 sm:p-8">
             <h1 className="text-brand-900 text-title">Trending &amp; Featured</h1>
             <p className="text-brand-muted mt-1 mb-6 text-small">
                 Turn on a blog to show it under &ldquo;Editor&apos;s picks&rdquo; on the Trending page. The
@@ -35,8 +35,8 @@ async function TrendingTable() {
 
     return (
         <div className="border-brand-200 overflow-x-auto rounded-xl border bg-white">
-            <table className="w-full text-left text-small">
-                <thead className="bg-brand-50 text-brand-muted">
+            <table className="w-full min-w-[640px] text-left text-small">
+                <thead className="bg-brand-50 text-brand-muted whitespace-nowrap">
                     <tr>
                         <th className="px-4 py-3 font-medium">Blog</th>
                         <th className="px-4 py-3 font-medium">Category</th>

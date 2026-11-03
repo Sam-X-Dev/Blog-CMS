@@ -3,9 +3,8 @@ import Link from "next/link";
 import { blogsPath } from "@/lib/blog-utils";
 import { getLatestBlogs, getMostReadThisWeek } from "@/lib/queries/public-blogs";
 import { BlogCard } from "./BlogCard";
-import { BlogSearchForm } from "./BlogSearchForm";
 
-/** The body of every 404 page: message, search, quick links and a few blogs to read instead. */
+/** The body of every 404 page: message, quick links and a few blogs to read instead. */
 export function NotFoundContent() {
     return (
         <div className="mx-auto flex w-full max-w-6xl flex-col gap-16 px-4 py-16 sm:px-6 sm:py-24">
@@ -14,13 +13,9 @@ export function NotFoundContent() {
                 <div className="flex flex-col gap-3">
                     <h1 className="text-brand-900 text-title">Page not found</h1>
                     <p className="text-brand-muted text-body mx-auto max-w-md">
-                        This page may have moved, or the link is wrong. Try searching, or pick one of the links
-                        below.
+                        This page may have moved, or the link is wrong. Use the search at the top, or pick one
+                        of the links below.
                     </p>
-                </div>
-
-                <div className="flex w-full justify-center">
-                    <BlogSearchForm q="" sort="newest" />
                 </div>
 
                 <nav

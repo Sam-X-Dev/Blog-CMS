@@ -128,6 +128,8 @@ export const getPublishedBlog = cache(async (slug: string) => {
             thumbnail: true,
             publishedAt: true,
             updatedAt: true,
+            seoTitle: true,
+            seoDescription: true,
             category: { select: { name: true, slug: true } },
             tags: { select: { name: true, slug: true }, orderBy: { name: "asc" } },
         },

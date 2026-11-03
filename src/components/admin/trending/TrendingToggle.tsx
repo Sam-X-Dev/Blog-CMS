@@ -68,7 +68,7 @@ export function TrendingToggle({
                 }`}
         >
             <span
-                className={`inline-block size-5 rounded-full bg-white shadow transition-transform ${on ? "translate-x-6" : "translate-x-1"
+                className={`inline-block size-5 rounded-full shadow transition-transform ${on ? "translate-x-6 bg-white" : "dark:bg-brand-muted translate-x-1 bg-white"
                     }`}
             />
         </button>

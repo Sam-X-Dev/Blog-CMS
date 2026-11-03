@@ -2,7 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { fail, handleApiError, ok } from "@/lib/api-response";
 import { deleteImage } from "@/lib/cloudinary";
 
-// DELETE /api/media/:id — admin only (protect in proxy.ts)
+// DELETE /api/media/:id — admin (login check: Samarth)
 // Refuses while a blog still uses the image, so no blog ends up with a broken picture.
 export async function DELETE(_request: Request, { params }: RouteContext<"/api/media/[id]">) {
   const { id } = await params;

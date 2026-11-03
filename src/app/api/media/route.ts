@@ -13,7 +13,7 @@ import { saveMediaSchema } from "@/lib/validations/media";
 
 const PER_PAGE = 24;
 
-// GET /api/media?page=1 — admin only (protect in proxy.ts). Newest first, 24 per page.
+// GET /api/media?page=1 — admin (login check: Samarth). Newest first, 24 per page.
 export async function GET(request: Request) {
   const pageParam = Number(new URL(request.url).searchParams.get("page"));
   const page = Number.isInteger(pageParam) && pageParam > 0 ? pageParam : 1;
@@ -36,7 +36,7 @@ export async function GET(request: Request) {
   }
 }
 
-// POST /api/media — admin only (protect in proxy.ts)
+// POST /api/media — admin (login check: Samarth)
 // Called after the browser uploaded to Cloudinary. Checks the upload is real, then saves it.
 export async function POST(request: Request) {
   if (!isCloudinaryReady()) return fail("Image upload isn't set up yet", 503);

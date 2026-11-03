@@ -8,7 +8,7 @@ import {
   uploadImageBuffer,
 } from "@/lib/cloudinary";
 
-// POST /api/upload — admin only (protect in proxy.ts)
+// POST /api/upload — admin (login check: Samarth)
 // Body: multipart/form-data with one field "file" (jpg, jpeg, png or webp, up to 10 MB).
 // Uploads to Cloudinary, saves it in the Media table and returns the saved row.
 export async function POST(request: Request) {

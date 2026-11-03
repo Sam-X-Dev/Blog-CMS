@@ -1,7 +1,7 @@
 import { fail, ok } from "@/lib/api-response";
 import { createUploadSignature } from "@/lib/cloudinary";
 
-// POST /api/media/sign — admin only (protect in proxy.ts)
+// POST /api/media/sign — admin (login check: Samarth)
 // Gives the browser a one-time signature so it can upload straight to Cloudinary.
 // The file never passes through our server, so there is no server upload size limit.
 export async function POST() {

@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { HeaderSearch } from "./HeaderSearch";
+import { HeaderSearch, HeaderSearchShell } from "./HeaderSearch";
 import { MenuButtonPlaceholder, MobileMenu } from "./MobileMenu";
 import { NavLinkList, NavLinks } from "./NavLinks";
 import { SiteLogo } from "./SiteLogo";
@@ -23,7 +23,11 @@ export function SiteHeader() {
         </div>
 
         <div className="ml-auto flex items-center gap-2">
-          <HeaderSearch id="site-search" className="hidden md:flex md:w-48 lg:w-64" />
+          <Suspense
+            fallback={<HeaderSearchShell id="site-search" className="hidden md:flex md:w-48 lg:w-64" />}
+          >
+            <HeaderSearch id="site-search" className="hidden md:flex md:w-48 lg:w-64" />
+          </Suspense>
           <ThemeToggle />
           <Suspense fallback={<MenuButtonPlaceholder />}>
             <MobileMenu />

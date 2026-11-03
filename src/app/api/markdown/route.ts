@@ -4,7 +4,7 @@ import { sanitizeBlogHtml } from "@/lib/sanitize";
 
 const MAX_BYTES = 1024 * 1024; // 1 MB is plenty for a text file
 
-// POST /api/markdown — admin only (protect in proxy.ts)
+// POST /api/markdown — admin (login check: Samarth)
 // Body: multipart/form-data with one field "file" (.md or .markdown).
 // Returns { html, title?, description? }. The HTML is already cleaned (no scripts etc.).
 export async function POST(request: Request) {

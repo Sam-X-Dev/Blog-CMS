@@ -4,7 +4,7 @@ import { fail, handleApiError, ok } from "@/lib/api-response";
 
 const trendingSchema = z.object({ isTrending: z.boolean() });
 
-// PATCH /api/trending/:id — admin only (protected by Samarth's proxy.ts)
+// PATCH /api/trending/:id — admin (login check: Samarth)
 // Body: { isTrending: true | false }
 export async function PATCH(request: Request, ctx: RouteContext<"/api/trending/[id]">) {
     const { id } = await ctx.params;
