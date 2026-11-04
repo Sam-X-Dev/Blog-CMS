@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { BlogContent } from "@/components/blog/BlogContent";
 import { BlogCard } from "@/components/public/BlogCard";
+import { ShareButtons } from "@/components/public/ShareButtons";
 import { BlogMeta } from "@/components/public/BlogMeta";
 import { BlogThumbnail } from "@/components/public/BlogThumbnail";
 import { GridSkeleton } from "@/components/public/GridSkeleton";
@@ -106,6 +107,8 @@ async function BlogArticle({ params }: Pick<Props, "params">) {
             ))}
           </ul>
         )}
+
+        <ShareButtons title={blog.title} />
 
         <div className="border-brand-200 flex flex-wrap items-center justify-between gap-3 border-t pt-6">
           <Link

@@ -46,6 +46,8 @@ export function useRibbonState(editor: Editor) {
                 canMergeOrSplit: e.can().mergeOrSplit(),
                 canUndo: e.can().undo(),
                 canRedo: e.can().redo(),
+                fontFamily: (e.getAttributes("textStyle").fontFamily as string | undefined) ?? "",
+                fontSize: (e.getAttributes("textStyle").fontSize as string | undefined) ?? "",
                 words: e.storage.characterCount.words(),
                 characters: e.storage.characterCount.characters(),
             };

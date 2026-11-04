@@ -1,10 +1,13 @@
 import { prisma } from "@/lib/prisma";
 import { fail, handleApiError, ok } from "@/lib/api-response";
 import { deleteImage } from "@/lib/cloudinary";
+import { requireAdminApi } from "@/lib/auth";
 
 // DELETE /api/media/:id — admin (login check: Samarth)
 // Refuses while a blog still uses the image, so no blog ends up with a broken picture.
 export async function DELETE(_request: Request, { params }: RouteContext<"/api/media/[id]">) {
+  const denied = await requireAdminApi();
+  if (denied) return denied;
   const { id } = await params;
 
   try {

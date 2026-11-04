@@ -36,7 +36,7 @@ export function BlogRowActions({
         method: "PATCH",
         body: JSON.stringify({ status: published ? "DRAFT" : "PUBLISHED" }),
       });
-      toast.success(published ? "Moved to drafts" : "Blog published");
+      toast.success(published ? "Blog moved to drafts" : "Blog published successfully");
       router.refresh();
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Could not change the status");
@@ -49,7 +49,7 @@ export function BlogRowActions({
     setBusy("delete");
     try {
       await apiFetch(`/api/blogs/${id}`, { method: "DELETE" });
-      toast.success("Blog deleted");
+      toast.success("Blog deleted successfully");
       setConfirming(false);
       router.refresh();
     } catch (err) {
@@ -101,7 +101,7 @@ export function BlogRowActions({
 
       <ConfirmDialog
         open={confirming}
-        title="Delete this blog?"
+        title="Are you sure you want to delete this blog?"
         description={`"${title}" will be removed from the website and the admin panel. This can't be undone.`}
         confirmLabel="Delete blog"
         loading={busy === "delete"}

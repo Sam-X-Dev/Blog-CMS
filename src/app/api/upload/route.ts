@@ -7,11 +7,14 @@ import {
   isCloudinaryReady,
   uploadImageBuffer,
 } from "@/lib/cloudinary";
+import { requireAdminApi } from "@/lib/auth";
 
 // POST /api/upload — admin (login check: Samarth)
 // Body: multipart/form-data with one field "file" (jpg, jpeg, png or webp, up to 10 MB).
 // Uploads to Cloudinary, saves it in the Media table and returns the saved row.
 export async function POST(request: Request) {
+  const denied = await requireAdminApi();
+  if (denied) return denied;
   if (!isCloudinaryReady()) return fail("Image upload isn't set up yet", 503);
 
   const form = await request.formData().catch(() => null);

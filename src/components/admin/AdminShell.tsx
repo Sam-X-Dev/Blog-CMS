@@ -3,12 +3,14 @@
 import { useEffect, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { toast } from "sonner";
 import {
   ExternalLink,
   FileText,
   FolderTree,
   Images,
   LayoutDashboard,
+  LogOut,
   Menu,
   SquarePen,
   Tags,
@@ -75,7 +77,9 @@ const isDesktop = () => window.matchMedia("(min-width: 1024px)").matches;
  * Desktop: sidebar you can hide / show with the hamburger (choice is remembered).
  * Phones and tablets: top bar + slide-in menu.
  */
-export function AdminShell({ children }: { children: React.ReactNode }) {
+type Admin = { name: string; email: string };
+
+export function AdminShell({ admin, children }: { admin: Admin; children: React.ReactNode }) {
   const pathname = usePathname();
   const [menuFor, setMenuFor] = useState<string | null>(null);
   const drawerOpen = menuFor === pathname; // closes by itself after navigating
@@ -100,6 +104,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
       {!hidden && (
         <aside className="border-brand-200 sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r bg-white lg:flex">
           <Sidebar
+            admin={admin}
             pathname={pathname}
             menuButton={
               <MenuButton label="Hide sidebar" expanded onClick={() => setSidebarHidden(true)} />
@@ -119,6 +124,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
           />
           <aside className="border-brand-200 relative flex h-full w-72 max-w-[85vw] flex-col border-r bg-white shadow-xl">
             <Sidebar
+              admin={admin}
               pathname={pathname}
               menuButton={
                 <MenuButton label="Close menu" expanded close onClick={() => setMenuFor(null)} />
@@ -189,7 +195,33 @@ function AdminLogo() {
   );
 }
 
-function Sidebar({ pathname, menuButton }: { pathname: string; menuButton: React.ReactNode }) {
+function Sidebar({
+  admin,
+  pathname,
+  menuButton,
+}: {
+  admin: Admin;
+  pathname: string;
+  menuButton: React.ReactNode;
+}) {
+  const [loggingOut, setLoggingOut] = useState(false);
+
+  async function logout() {
+    setLoggingOut(true);
+    try {
+      const res = await fetch("/api/auth/logout", { method: "POST" });
+      if (!res.ok) throw new Error();
+    } catch {
+      toast.error("Could not log out. Check your connection and try again.");
+      setLoggingOut(false);
+      return;
+    }
+    // Full page load (not router.push) so no admin page stays cached in the browser
+    // Full page load on purpose: nothing from the admin panel should stay in memory
+    // eslint-disable-next-line @next/next/no-location-assign-relative-destination
+    window.location.href = "/admin/login";
+  }
+
   return (
     <>
       <div className="border-brand-200 flex items-center gap-3 border-b px-4 py-3">
@@ -221,15 +253,37 @@ function Sidebar({ pathname, menuButton }: { pathname: string; menuButton: React
         </ul>
       </nav>
 
-      <div className="border-brand-200 flex items-center gap-2 border-t px-4 py-4">
-        <Link
-          href="/"
-          target="_blank"
-          className="border-brand-200 text-brand-900 hover:bg-brand-50 text-small flex h-10 flex-1 items-center justify-center gap-2 rounded-lg border font-medium"
+      <div className="border-brand-200 flex flex-col gap-3 border-t px-4 py-4">
+        <div className="flex items-center gap-3">
+          <span
+            aria-hidden
+            className="bg-brand-100 text-brand-900 text-small flex size-9 shrink-0 items-center justify-center rounded-full font-semibold"
+          >
+            {(admin.name || admin.email).charAt(0).toUpperCase()}
+          </span>
+          <div className="min-w-0 flex-1">
+            <p className="text-small text-brand-900 truncate font-semibold">{admin.name}</p>
+            <p className="text-caption text-brand-muted truncate">{admin.email}</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          <Link
+            href="/"
+            target="_blank"
+            className="border-brand-200 text-brand-900 hover:bg-brand-50 text-small flex h-10 flex-1 items-center justify-center gap-2 rounded-lg border font-medium"
+          >
+            <ExternalLink className="size-4" /> View site
+          </Link>
+          <ThemeToggle />
+        </div>
+        <button
+          type="button"
+          onClick={logout}
+          disabled={loggingOut}
+          className="text-small flex h-10 items-center justify-center gap-2 rounded-lg border border-red-200 font-medium text-red-600 transition-colors hover:bg-red-50 disabled:opacity-60 dark:border-red-900/60 dark:text-red-400 dark:hover:bg-red-950/40"
         >
-          <ExternalLink className="size-4" /> View site
-        </Link>
-        <ThemeToggle />
+          <LogOut className="size-4" /> {loggingOut ? "Logging out..." : "Logout"}
+        </button>
       </div>
     </>
   );

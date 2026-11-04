@@ -30,6 +30,20 @@ export async function apiFetch<T>(url: string, init?: RequestInit): Promise<T> {
     throw new ApiError(response.statusText || "Failed to parse response", response.status);
   }
 
+  // Login expired while working in the admin panel: go back to the login page
+  if (
+    response.status === 401 &&
+    typeof window !== "undefined" &&
+    !url.startsWith("/api/auth/") &&
+    window.location.pathname.startsWith("/admin") &&
+    window.location.pathname !== "/admin/login"
+  ) {
+    const next = encodeURIComponent(window.location.pathname + window.location.search);
+    // Full page load on purpose: nothing from the admin panel should stay in memory
+    // eslint-disable-next-line @next/next/no-location-assign-relative-destination
+    window.location.href = `/admin/login?next=${next}`;
+  }
+
   if (!response.ok || !json.success) {
     throw new ApiError(json.message || "Request failed", response.status, json.errors);
   }

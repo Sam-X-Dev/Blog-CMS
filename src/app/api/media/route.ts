@@ -10,11 +10,14 @@ import {
   MEDIA_FOLDER,
 } from "@/lib/cloudinary";
 import { saveMediaSchema } from "@/lib/validations/media";
+import { requireAdminApi } from "@/lib/auth";
 
 const PER_PAGE = 24;
 
 // GET /api/media?page=1 — admin (login check: Samarth). Newest first, 24 per page.
 export async function GET(request: Request) {
+  const denied = await requireAdminApi();
+  if (denied) return denied;
   const pageParam = Number(new URL(request.url).searchParams.get("page"));
   const page = Number.isInteger(pageParam) && pageParam > 0 ? pageParam : 1;
 
@@ -39,6 +42,8 @@ export async function GET(request: Request) {
 // POST /api/media — admin (login check: Samarth)
 // Called after the browser uploaded to Cloudinary. Checks the upload is real, then saves it.
 export async function POST(request: Request) {
+  const denied = await requireAdminApi();
+  if (denied) return denied;
   if (!isCloudinaryReady()) return fail("Image upload isn't set up yet", 503);
 
   const body = await request.json().catch(() => null);

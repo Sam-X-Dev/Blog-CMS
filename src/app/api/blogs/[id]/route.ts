@@ -3,11 +3,14 @@ import { prisma } from "@/lib/prisma";
 import { fail, handleApiError, ok } from "@/lib/api-response";
 import { BlogInputError, toBlogData } from "@/lib/blog-admin";
 import { blogInputSchema } from "@/lib/validations/blog";
+import { requireAdminApi } from "@/lib/auth";
 
 type Ctx = RouteContext<"/api/blogs/[id]">;
 
 // GET /api/blogs/:id. Everything the edit form needs.
 export async function GET(_request: Request, ctx: Ctx) {
+  const denied = await requireAdminApi();
+  if (denied) return denied;
   const { id } = await ctx.params;
   try {
     const blog = await prisma.blog.findUnique({
@@ -27,6 +30,8 @@ export async function GET(_request: Request, ctx: Ctx) {
 // PUT /api/blogs/:id. Updates THIS blog (never creates a new one).
 // The URL (slug) stays the same unless the admin typed a different one.
 export async function PUT(request: Request, ctx: Ctx) {
+  const denied = await requireAdminApi();
+  if (denied) return denied;
   const { id } = await ctx.params;
 
   const body = await request.json().catch(() => null);
@@ -82,6 +87,8 @@ export async function PUT(request: Request, ctx: Ctx) {
 
 // DELETE /api/blogs/:id. Deletes the blog (its view counts go with it).
 export async function DELETE(_request: Request, ctx: Ctx) {
+  const denied = await requireAdminApi();
+  if (denied) return denied;
   const { id } = await ctx.params;
   try {
     await prisma.blog.delete({ where: { id } });

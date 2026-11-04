@@ -4,10 +4,13 @@ import { fail, handleApiError, ok } from "@/lib/api-response";
 import { BlogInputError, toBlogData, uniqueSlug } from "@/lib/blog-admin";
 import { listAdminBlogs, parseAdminBlogQuery } from "@/lib/queries/admin-blogs";
 import { blogInputSchema } from "@/lib/validations/blog";
+import { requireAdminApi } from "@/lib/auth";
 
 // GET /api/blogs?q=&status=all|published|draft&category=<id>&sort=updated|newest|oldest|title&page=
 // All blogs (drafts too), 20 per page.
 export async function GET(request: Request) {
+  const denied = await requireAdminApi();
+  if (denied) return denied;
   try {
     const query = parseAdminBlogQuery(Object.fromEntries(new URL(request.url).searchParams));
     return ok(await listAdminBlogs(query), "Blogs fetched successfully");
@@ -19,6 +22,8 @@ export async function GET(request: Request) {
 // POST /api/blogs. Creates a blog (draft or published).
 // Body: { title, slug?, description, content, thumbnail, categoryId, tags[], seoTitle, seoDescription, status }
 export async function POST(request: Request) {
+  const denied = await requireAdminApi();
+  if (denied) return denied;
 
   const body = await request.json().catch(() => null);
   if (!body) return fail("Request body must be valid JSON", 400);

@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { ok, fail, handleApiError } from "@/lib/api-response";
 import { categorySchema } from "@/lib/validations/category";
 import { slugify } from "@/lib/slugify";
+import { requireAdminApi } from "@/lib/auth";
 
 export async function GET() {
   try {
@@ -24,6 +25,8 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const denied = await requireAdminApi();
+  if (denied) return denied;
   try {
     let body: unknown;
     try {

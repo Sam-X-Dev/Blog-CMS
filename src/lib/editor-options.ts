@@ -1,4 +1,28 @@
-// Fonts and sizes are NOT options: every blog uses the website type scale (see globals.css).
+/**
+ * Font choices in the editor (Home → Font). "Default" = the website font (Inter).
+ * Roboto and Poppins are loaded by the root layout (only downloaded when a blog uses them).
+ * The sanitizer only keeps these exact fonts and sizes.
+ */
+export const FONT_FAMILIES = [
+  { label: "Default", value: "" },
+  { label: "Arial", value: "Arial, Helvetica, sans-serif" },
+  { label: "Roboto", value: "var(--font-roboto), Roboto, Arial, sans-serif" },
+  { label: "Poppins", value: "var(--font-poppins), Poppins, Arial, sans-serif" },
+  { label: "Georgia", value: "Georgia, serif" },
+  { label: "Times New Roman", value: "'Times New Roman', Times, serif" },
+  { label: "Courier New", value: "'Courier New', Courier, monospace" },
+];
+
+export const FONT_SIZES = [
+  { label: "Small", value: "14px" },
+  { label: "Normal", value: "" },
+  { label: "Large", value: "20px" },
+  { label: "Extra Large", value: "26px" },
+];
+
+/** Same font written slightly differently ('Times' vs "Times") counts as the same. */
+export const normalizeFont = (v: string) => v.replace(/['"\s]/g, "").toLowerCase();
+
 
 /** Office-style colour grid: 10 columns × 3 rows */
 export const TEXT_COLORS = [

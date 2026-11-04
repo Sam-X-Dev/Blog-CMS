@@ -2,10 +2,13 @@ import { prisma } from "@/lib/prisma";
 import { fail, handleApiError, ok } from "@/lib/api-response";
 import { publishProblems } from "@/lib/blog-admin";
 import { blogStatusSchema } from "@/lib/validations/blog";
+import { requireAdminApi } from "@/lib/auth";
 
 // PATCH /api/blogs/:id/status. Body: { status: "PUBLISHED" | "DRAFT" }
 // Quick publish / unpublish from the blog list, without opening the editor.
 export async function PATCH(request: Request, ctx: RouteContext<"/api/blogs/[id]/status">) {
+  const denied = await requireAdminApi();
+  if (denied) return denied;
   const { id } = await ctx.params;
 
   const parsed = blogStatusSchema.safeParse(await request.json().catch(() => null));

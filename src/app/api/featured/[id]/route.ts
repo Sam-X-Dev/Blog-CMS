@@ -1,12 +1,15 @@
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { fail, handleApiError, ok } from "@/lib/api-response";
+import { requireAdminApi } from "@/lib/auth";
 
 const featuredSchema = z.object({ isFeatured: z.boolean() });
 
 // PATCH /api/featured/:id — admin (login check: Samarth)
 // Body: { isFeatured: true | false }. The newest featured blog becomes the homepage hero.
 export async function PATCH(request: Request, ctx: RouteContext<"/api/featured/[id]">) {
+  const denied = await requireAdminApi();
+  if (denied) return denied;
   const { id } = await ctx.params;
   const body = await request.json().catch(() => null);
   const parsed = featuredSchema.safeParse(body);

@@ -58,7 +58,13 @@ export function Select({
 
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(0);
-  const [pos, setPos] = useState<{ left: number; width: number; top?: number; bottom?: number; maxH: number } | null>(null);
+  const [pos, setPos] = useState<{
+    left: number;
+    width: number;
+    top?: number;
+    bottom?: number;
+    maxH: number;
+  } | null>(null);
 
   const buttonRef = useRef<HTMLButtonElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
@@ -127,7 +133,9 @@ export function Select({
   // Keep the highlighted row in view
   useEffect(() => {
     if (!open) return;
-    listRef.current?.querySelector<HTMLElement>(`[data-index="${active}"]`)?.scrollIntoView({ block: "nearest" });
+    listRef.current
+      ?.querySelector<HTMLElement>(`[data-index="${active}"]`)
+      ?.scrollIntoView({ block: "nearest" });
   }, [open, active]);
 
   const jumpToLetter = (key: string) => {
@@ -194,8 +202,10 @@ export function Select({
         disabled={disabled}
         onClick={() => (open ? close() : openMenu())}
         onKeyDown={onKeyDown}
-        className={`text-brand-900 text-small flex w-full items-center justify-between gap-2 rounded-lg border bg-white text-left transition outline-none focus-visible:ring-2 disabled:cursor-not-allowed disabled:opacity-60 ${
-          invalid ? "border-red-500 focus-visible:ring-red-200" : "border-brand-400 focus-visible:ring-brand-400/40"
+        className={`text-brand-900 ${/\btext-(caption|small|body)\b/.test(className) ? "" : "text-small"} flex w-full items-center justify-between gap-2 rounded-lg border bg-white text-left transition outline-none focus-visible:ring-2 disabled:cursor-not-allowed disabled:opacity-60 ${
+          invalid
+            ? "border-red-500 focus-visible:ring-red-200"
+            : "border-brand-400 focus-visible:ring-brand-400/40"
         } ${open ? "ring-brand-400/40 ring-2" : ""} ${className}`}
       >
         <span className="truncate">{selected?.label ?? ""}</span>
@@ -239,7 +249,10 @@ export function Select({
                     i === active ? "bg-brand-100/70" : ""
                   } ${isSelected ? "text-brand-600 font-semibold" : "text-brand-900"}`}
                 >
-                  <Check aria-hidden className={`size-4 shrink-0 ${isSelected ? "" : "invisible"}`} />
+                  <Check
+                    aria-hidden
+                    className={`size-4 shrink-0 ${isSelected ? "" : "invisible"}`}
+                  />
                   {o.label}
                 </li>
               );

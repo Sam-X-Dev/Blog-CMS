@@ -73,8 +73,9 @@ async function BlogsTable({ searchParams }: Pick<PageProps<"/admin/blogs">, "sea
       {blogs.length === 0 ? (
         <div className="border-brand-200 flex flex-col items-center gap-3 rounded-xl border border-dashed bg-white px-6 py-14 text-center">
           <p className="text-brand-900 text-heading">
-            {filtered ? "No blogs match" : "No blogs yet"}
+            {filtered ? "No blogs match" : "No blogs found."}
           </p>
+          {!filtered && <p className="text-brand-muted text-small">Create your first blog.</p>}
           {filtered ? (
             <Link
               href="/admin/blogs"
@@ -85,9 +86,9 @@ async function BlogsTable({ searchParams }: Pick<PageProps<"/admin/blogs">, "sea
           ) : (
             <Link
               href="/admin/blogs/new"
-              className="text-brand-600 text-small font-semibold hover:underline"
+              className="bg-brand-600 hover:bg-brand-700 text-small mt-1 inline-flex h-10 items-center rounded-lg px-4 font-semibold text-white"
             >
-              Write your first blog
+              Create Blog
             </Link>
           )}
         </div>

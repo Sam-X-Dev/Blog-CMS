@@ -16,12 +16,10 @@ export function createExtensions(placeholder: string) {
             heading: { levels: [1, 2, 3] },
             link: { openOnClick: false, autolink: true, defaultProtocol: "https" },
         }),
-        // Text colour only: font and size come from the website, so every blog looks the same
+        // Text colour, font and font size (the choices are in lib/editor-options.ts)
         TextStyleKit.configure({
             backgroundColor: false,
             lineHeight: false,
-            fontFamily: false,
-            fontSize: false,
         }),
         TextAlign.configure({ types: ["heading", "paragraph"] }),
         Highlight.configure({ multicolor: true }),

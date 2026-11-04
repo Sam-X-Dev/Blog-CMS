@@ -28,7 +28,7 @@ export const blogInputSchema = z
     title: z
       .string({ error: "Title is required" })
       .trim()
-      .min(3, { error: "Title must be at least 3 characters" })
+      .min(5, { error: "Title must be at least 5 characters" })
       .max(150, { error: "Title must be 150 characters or less" }),
     slug: z
       .string()
@@ -42,8 +42,8 @@ export const blogInputSchema = z
     description: z
       .string()
       .trim()
-      .max(300, { error: "Description must be 300 characters or less" })
-      .default(""),
+      .min(1, { error: "Description is required" })
+      .max(300, { error: "Description must be 300 characters or less" }),
     content: z.string().max(1_000_000, { error: "Content is too long" }).default(""),
     thumbnail: z
       .string()

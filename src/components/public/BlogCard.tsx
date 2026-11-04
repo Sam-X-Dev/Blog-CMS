@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import { blogPath, categoryPath } from "@/lib/blog-utils";
 import type { BlogCardData } from "@/lib/queries/public-blogs";
 import { BlogMeta } from "./BlogMeta";
@@ -37,6 +38,15 @@ export function BlogCard({ blog }: { blog: BlogCardData }) {
             <p className="text-brand-muted text-small line-clamp-2">{blog.description}</p>
 
             <BlogMeta publishedAt={blog.publishedAt} readMinutes={blog.readMinutes} />
+
+            <Link
+                href={href}
+                aria-label={`Read more: ${blog.title}`}
+                className="text-brand-600 text-small mt-auto inline-flex items-center gap-1 self-start font-semibold hover:underline"
+            >
+                Read more
+                <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" aria-hidden />
+            </Link>
         </article>
     );
 }

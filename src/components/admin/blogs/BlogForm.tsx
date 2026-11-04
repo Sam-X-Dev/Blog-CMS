@@ -158,11 +158,13 @@ export function BlogForm({
       const msg =
         nextStatus === "PUBLISHED"
           ? status === "PUBLISHED"
-            ? "Changes are live on the website"
-            : "Blog published"
+            ? "Blog updated successfully. Changes are live on the website."
+            : "Blog published successfully"
           : status === "PUBLISHED"
-            ? "Moved to drafts (hidden from the website)"
-            : "Draft saved";
+            ? "Blog moved to drafts (hidden from the website)"
+            : blog
+              ? "Blog updated successfully"
+              : "Blog created successfully (saved as draft)";
       toast.success(msg, {
         action:
           result.status === "PUBLISHED"
@@ -202,7 +204,7 @@ export function BlogForm({
       await apiFetch(`/api/blogs/${blog.id}`, { method: "DELETE" });
       clearBackup();
       setSaved(values); // nothing left to warn about
-      toast.success("Blog deleted");
+      toast.success("Blog deleted successfully");
       router.replace("/admin/blogs");
       router.refresh();
     } catch (err) {
@@ -324,6 +326,7 @@ export function BlogForm({
             value={values.content}
             onChange={(html) => set("content", html)}
             error={errors.content}
+            exportTitle={values.title}
             onImport={({ title, description }) => {
               if (title && !values.title) setTitle(title);
               if (description && !values.description) set("description", description);
@@ -492,7 +495,7 @@ export function BlogForm({
 
       <ConfirmDialog
         open={confirmDelete}
-        title="Delete this blog?"
+        title="Are you sure you want to delete this blog?"
         description={`"${values.title || "This blog"}" will be removed from the website and the admin panel. This can't be undone.`}
         confirmLabel="Delete blog"
         loading={deleting}
@@ -521,11 +524,13 @@ function pickValues(b: ExistingBlog): BlogFormValues {
 
 function checkLocally(v: BlogFormValues, status: Status): Errors {
   const e: Errors = {};
-  if (v.title.trim().length < 3) e.title = "Title must be at least 3 characters";
+  if (!v.title.trim()) e.title = "Title is required";
+  else if (v.title.trim().length < 5) e.title = "Title must be at least 5 characters";
+  if (!v.description.trim()) e.description = "Description is required";
   if (v.slug && !SLUG_PATTERN.test(v.slug))
     e.slug = "Use only lowercase letters, numbers and hyphens";
   if (status === "PUBLISHED") {
-    if (v.description.trim().length < 10)
+    if (!e.description && v.description.trim().length < 10)
       e.description = "Add a description (at least 10 characters) before publishing";
     if (!plainText(v.content) && !/<img\b/i.test(v.content))
       e.content = "Write some content before publishing";

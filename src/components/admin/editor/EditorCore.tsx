@@ -16,6 +16,8 @@ export type BlogEditorProps = {
   onChange: (html: string) => void;
   /** Called after "Import .md" with the title/description from the file's front matter */
   onImport?: (meta: ImportedMeta) => void;
+  /** Blog title, used by "Export .md" */
+  exportTitle?: string;
   placeholder?: string;
   error?: string;
 };
@@ -25,6 +27,7 @@ export default function EditorCore({
   value,
   onChange,
   onImport,
+  exportTitle,
   placeholder = "Start writing your blog...",
   error,
 }: BlogEditorProps) {
@@ -86,16 +89,20 @@ export default function EditorCore({
 
   if (!editor) return <EditorSkeleton />;
 
-  return <EditorShell editor={editor} onImport={onImport} error={error} />;
+  return (
+    <EditorShell editor={editor} onImport={onImport} exportTitle={exportTitle} error={error} />
+  );
 }
 
 function EditorShell({
   editor,
   onImport,
+  exportTitle,
   error,
 }: {
   editor: Editor;
   onImport?: (meta: ImportedMeta) => void;
+  exportTitle?: string;
   error?: string;
 }) {
   const s = useRibbonState(editor);
@@ -124,6 +131,7 @@ function EditorShell({
           fullscreen={fullscreen}
           onToggleFullscreen={() => setFullscreen((f) => !f)}
           onImport={onImport}
+          exportTitle={exportTitle}
         />
 
         {/* The "page", like a Word document */}

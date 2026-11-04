@@ -3,11 +3,14 @@ import { prisma } from "@/lib/prisma";
 import { fail, handleApiError, ok } from "@/lib/api-response";
 import { slugify } from "@/lib/slugify";
 import { tagSchema } from "@/lib/validations/blog";
+import { requireAdminApi } from "@/lib/auth";
 
 type Ctx = RouteContext<"/api/tags/[id]">;
 
 // PUT /api/tags/:id. Body: { name }. Renames the tag everywhere.
 export async function PUT(request: Request, ctx: Ctx) {
+  const denied = await requireAdminApi();
+  if (denied) return denied;
   const { id } = await ctx.params;
   const parsed = tagSchema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) return fail("Invalid tag", 400, z.flattenError(parsed.error).fieldErrors);
@@ -25,6 +28,8 @@ export async function PUT(request: Request, ctx: Ctx) {
 
 // DELETE /api/tags/:id. Blogs keep existing; they just lose this tag.
 export async function DELETE(_request: Request, ctx: Ctx) {
+  const denied = await requireAdminApi();
+  if (denied) return denied;
   const { id } = await ctx.params;
   try {
     await prisma.tag.delete({ where: { id } });

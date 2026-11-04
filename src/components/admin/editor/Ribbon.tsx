@@ -5,6 +5,7 @@ import type { Editor } from "@tiptap/react";
 import { Maximize2, Minimize2, Redo2, Undo2 } from "lucide-react";
 import { HomeTab } from "./HomeTab";
 import { InsertTab } from "./InsertTab";
+import { MarkdownExport } from "./MarkdownExport";
 import { MarkdownImport, type ImportedMeta } from "./MarkdownImport";
 import { RibbonButton, RibbonDivider, RibbonGroup } from "./ribbon-ui";
 import { TableTab } from "./TableTab";
@@ -18,6 +19,8 @@ type RibbonProps = {
     fullscreen: boolean;
     onToggleFullscreen: () => void;
     onImport?: (meta: ImportedMeta) => void;
+    /** Blog title, used as the heading and file name of "Export .md" */
+    exportTitle?: string;
 };
 
 export function Ribbon({
@@ -26,6 +29,7 @@ export function Ribbon({
     fullscreen,
     onToggleFullscreen,
     onImport,
+    exportTitle,
 }: RibbonProps) {
     const [tab, setTab] = useState<TabId>("home");
 
@@ -80,6 +84,7 @@ export function Ribbon({
                     />
                     <RibbonDivider />
                     <MarkdownImport editor={editor} onImport={onImport} />
+                    <MarkdownExport editor={editor} title={exportTitle} />
                 </div>
             </div>
 

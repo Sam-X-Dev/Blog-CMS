@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { ok, fail, handleApiError } from "@/lib/api-response";
 import { categorySchema } from "@/lib/validations/category";
 import { slugify } from "@/lib/slugify";
+import { requireAdminApi } from "@/lib/auth";
 
 export async function GET(_request: Request, ctx: RouteContext<"/api/categories/[id]">) {
   try {
@@ -29,6 +30,8 @@ export async function GET(_request: Request, ctx: RouteContext<"/api/categories/
 }
 
 export async function PUT(request: Request, ctx: RouteContext<"/api/categories/[id]">) {
+  const denied = await requireAdminApi();
+  if (denied) return denied;
   try {
     const { id } = await ctx.params;
 
@@ -67,6 +70,8 @@ export async function PUT(request: Request, ctx: RouteContext<"/api/categories/[
 }
 
 export async function DELETE(_request: Request, ctx: RouteContext<"/api/categories/[id]">) {
+  const denied = await requireAdminApi();
+  if (denied) return denied;
   try {
     const { id } = await ctx.params;
 

@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { fail, handleApiError, ok } from "@/lib/api-response";
 import { slugify } from "@/lib/slugify";
 import { tagSchema } from "@/lib/validations/blog";
+import { requireAdminApi } from "@/lib/auth";
 
 // GET /api/tags — all tags with how many blogs use each (A to Z)
 export async function GET() {
@@ -19,6 +20,8 @@ export async function GET() {
 
 // POST /api/tags. Body: { name }
 export async function POST(request: Request) {
+  const denied = await requireAdminApi();
+  if (denied) return denied;
   const parsed = tagSchema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) return fail("Invalid tag", 400, z.flattenError(parsed.error).fieldErrors);
 

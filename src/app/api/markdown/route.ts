@@ -1,6 +1,7 @@
 import { fail, ok } from "@/lib/api-response";
 import { parseMarkdown } from "@/lib/markdown";
 import { sanitizeBlogHtml } from "@/lib/sanitize";
+import { requireAdminApi } from "@/lib/auth";
 
 const MAX_BYTES = 1024 * 1024; // 1 MB is plenty for a text file
 
@@ -8,6 +9,8 @@ const MAX_BYTES = 1024 * 1024; // 1 MB is plenty for a text file
 // Body: multipart/form-data with one field "file" (.md or .markdown).
 // Returns { html, title?, description? }. The HTML is already cleaned (no scripts etc.).
 export async function POST(request: Request) {
+  const denied = await requireAdminApi();
+  if (denied) return denied;
   const form = await request.formData().catch(() => null);
   const file = form?.get("file");
   if (!(file instanceof File)) {

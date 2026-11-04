@@ -20,9 +20,9 @@ function getPrismaClient(): PrismaClient {
   const adapter = new PrismaNeon({ connectionString });
   const client = new PrismaClient({ adapter });
 
-  if (process.env.NODE_ENV !== "production") {
-    globalForPrisma.prisma = client;
-  }
+  // Reuse ONE client everywhere (production too). Without this, every query in
+  // production opened a brand-new connection pool and the database ran out of connections.
+  globalForPrisma.prisma = client;
 
   return client;
 }
