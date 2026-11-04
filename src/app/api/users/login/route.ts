@@ -26,11 +26,17 @@ export async function POST(request: Request) {
 
   try {
     const user = await prisma.user.findUnique({ where: { email } });
-    // Same message for "no such email" and "wrong password", so emails can't be guessed
-    const valid = user ? await bcrypt.compare(password, user.password) : false;
-    if (!user || !valid) {
+    if (!user) {
       wrongTries.hit(key);
-      return fail("Invalid email or password.", 401);
+      return fail("No account found with this email. Please sign up first.", 404, {
+        email: ["This email is not registered"],
+      });
+    }
+    if (!(await bcrypt.compare(password, user.password))) {
+      wrongTries.hit(key);
+      return fail("Incorrect password. Please try again.", 401, {
+        password: ["Incorrect password"],
+      });
     }
 
     wrongTries.reset(key);

@@ -242,7 +242,8 @@ Validation errors add `"errors": { "title": ["Title must be at least 5 character
 
 - **Blog form** (checked in the browser and again on the server with Zod): title required, at least 5 characters; description required; content and thumbnail required to publish; slug must be lowercase letters, numbers and hyphens.
 - Passwords are hashed with bcrypt (cost 12) and never stored as plain text.
-- Login: same message for a wrong email or wrong password, and a limit of 8 wrong tries per 15 minutes. Sign up is limited to 5 accounts per hour per IP, comments to 5 per minute per reader.
+- Admin login: same message for a wrong email or wrong password. Reader login says clearly when an email is not registered (with a "Sign up with this email" link) or the password is wrong. Both allow 8 wrong tries per 15 minutes.
+- Emails are checked with the same regex in the browser and on the server (`src/lib/validations/email.ts`): no spaces, no `..`, a real domain and an extension like `.com` or `.in`. Sign up is limited to 5 accounts per hour per IP, comments to 5 per minute per reader.
 - Admin and reader tokens are signed for different audiences, so one can never be used as the other.
 - `src/proxy.ts` blocks admin pages and admin APIs without a valid token; each admin API also checks the session itself.
 - Blog HTML is cleaned with `sanitize-html` before it is saved and before it is shown, so scripts and unsafe links are removed.

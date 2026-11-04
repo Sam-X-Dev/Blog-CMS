@@ -7,6 +7,7 @@ import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { ApiError, apiFetch } from "@/lib/api-client";
 import { safeNextPath } from "@/lib/safe-next";
+import { EMAIL_MESSAGE, isValidEmail } from "@/lib/validations/email";
 import { refreshCurrentUser } from "@/lib/use-current-user";
 
 const input =
@@ -21,17 +22,20 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
   const params = useSearchParams();
   const next = safeNextPath(params.get("next"));
   const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+  // "Sign up with this email" from the login page fills the email in
+  const [email, setEmail] = useState(signup ? (params.get("email") ?? "") : "");
   const [password, setPassword] = useState("");
   const [show, setShow] = useState(false);
   const [errors, setErrors] = useState<Errors>({});
   const [message, setMessage] = useState<string | null>(null);
+  const [noAccount, setNoAccount] = useState(false);
   const [busy, setBusy] = useState(false);
 
   function check(): Errors {
     const e: Errors = {};
     if (signup && name.trim().length < 2) e.name = "Name must be at least 2 characters";
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) e.email = "Enter a valid email";
+    if (!email.trim()) e.email = "Email is required";
+    else if (!isValidEmail(email)) e.email = EMAIL_MESSAGE;
     if (signup ? password.length < 8 : !password)
       e.password = signup ? "Password must be at least 8 characters" : "Enter your password";
     return e;
@@ -40,6 +44,7 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setMessage(null);
+    setNoAccount(false);
     const local = check();
     setErrors(local);
     if (Object.keys(local).length) return;
@@ -65,11 +70,16 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
         });
       }
       setMessage(err instanceof ApiError ? err.message : "Could not reach the server. Try again.");
+      setNoAccount(!signup && err instanceof ApiError && err.status === 404);
       setBusy(false);
     }
   }
 
   const switchHref = `${signup ? "/login" : "/signup"}${next !== "/" ? `?next=${encodeURIComponent(next)}` : ""}`;
+  const signupWithEmail = `/signup?${new URLSearchParams({
+    email: email.trim(),
+    ...(next !== "/" ? { next } : {}),
+  })}`;
 
   return (
     <form onSubmit={submit} className="flex flex-col gap-4" noValidate>
@@ -124,6 +134,14 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
           className="text-small rounded-lg bg-red-50 px-3 py-2 text-red-700 dark:bg-red-950/40 dark:text-red-300"
         >
           {message}
+          {noAccount && (
+            <>
+              {" "}
+              <Link href={signupWithEmail} className="font-semibold underline">
+                Sign up with this email
+              </Link>
+            </>
+          )}
         </p>
       )}
 

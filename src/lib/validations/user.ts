@@ -1,6 +1,13 @@
 import { z } from "zod";
+import { EMAIL_MESSAGE, EMAIL_PATTERN } from "./email";
 
-const email = z.email({ error: "Enter a valid email" }).trim().toLowerCase().max(200);
+const email = z
+  .string({ error: "Email is required" })
+  .trim()
+  .min(1, { error: "Email is required" })
+  .max(254, { error: EMAIL_MESSAGE })
+  .regex(EMAIL_PATTERN, { error: EMAIL_MESSAGE })
+  .toLowerCase();
 
 /** Reader sign up */
 export const registerSchema = z.object({
