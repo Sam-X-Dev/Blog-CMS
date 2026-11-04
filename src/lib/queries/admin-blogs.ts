@@ -133,6 +133,10 @@ export async function getDashboardData() {
     recent,
     topWeek,
     noThumb,
+    readers,
+    comments,
+    likes,
+    saves,
   ] = await Promise.all([
     prisma.blog.count(),
     prisma.blog.count({ where: { status: "PUBLISHED" } }),
@@ -155,6 +159,10 @@ export async function getDashboardData() {
       take: 5,
     }),
     prisma.blog.count({ where: { status: "DRAFT", thumbnail: null } }),
+    prisma.user.count(),
+    prisma.comment.count(),
+    prisma.blogLike.count(),
+    prisma.savedBlog.count(),
   ]);
 
   const topBlogs = topWeek.length
@@ -176,6 +184,10 @@ export async function getDashboardData() {
       weekViews: weekViews._sum.count ?? 0,
       allViews: allViews._sum.count ?? 0,
       draftsWithoutThumbnail: noThumb,
+      readers,
+      comments,
+      likes,
+      saves,
     },
     recent,
     topThisWeek: topWeek.flatMap((t) => {

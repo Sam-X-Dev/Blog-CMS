@@ -5,6 +5,8 @@ import { Suspense } from "react";
 import { BlogContent } from "@/components/blog/BlogContent";
 import { BlogCard } from "@/components/public/BlogCard";
 import { ShareButtons } from "@/components/public/ShareButtons";
+import { BlogActions } from "@/components/public/BlogActions";
+import { BlogComments } from "@/components/public/BlogComments";
 import { BlogMeta } from "@/components/public/BlogMeta";
 import { BlogThumbnail } from "@/components/public/BlogThumbnail";
 import { GridSkeleton } from "@/components/public/GridSkeleton";
@@ -81,6 +83,7 @@ async function BlogArticle({ params }: Pick<Props, "params">) {
           <h1 className="text-brand-900 text-display">{blog.title}</h1>
           <p className="text-brand-muted text-body">{blog.description}</p>
           <BlogMeta publishedAt={blog.publishedAt} readMinutes={blog.readMinutes} />
+          <BlogActions blogId={blog.id} />
         </header>
 
         <BlogThumbnail
@@ -125,6 +128,10 @@ async function BlogArticle({ params }: Pick<Props, "params">) {
               More in {blog.category.name} →
             </Link>
           )}
+        </div>
+
+        <div className="border-brand-200 border-t pt-8">
+          <BlogComments blogId={blog.id} />
         </div>
       </article>
 

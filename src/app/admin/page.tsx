@@ -7,10 +7,14 @@ import {
   FilePen,
   FileCheck2,
   FileText,
+  Bookmark,
   FolderTree,
+  Heart,
   Images,
+  MessageCircle,
   Plus,
   Tags,
+  Users,
 } from "lucide-react";
 import { StatusBadge } from "@/components/admin/blogs/StatusBadge";
 import { formatDate } from "@/lib/blog-utils";
@@ -58,6 +62,10 @@ async function DashboardContent() {
     { label: "Categories", value: stats.categories, icon: FolderTree, href: "/admin/categories" },
     { label: "Tags", value: stats.tags, icon: Tags, href: "/admin/tags" },
     { label: "Images", value: stats.media, icon: Images, href: "/admin/media" },
+    { label: "Readers", value: stats.readers, icon: Users, href: "/admin/readers" },
+    { label: "Comments", value: stats.comments, icon: MessageCircle, href: "/admin/comments" },
+    { label: "Likes", value: stats.likes, icon: Heart, href: "/admin/readers" },
+    { label: "Saves", value: stats.saves, icon: Bookmark, href: "/admin/readers" },
   ];
 
   return (

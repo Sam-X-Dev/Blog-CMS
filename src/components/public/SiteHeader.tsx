@@ -4,10 +4,11 @@ import { MenuButtonPlaceholder, MobileMenu } from "./MobileMenu";
 import { NavLinkList, NavLinks } from "./NavLinks";
 import { SiteLogo } from "./SiteLogo";
 import { ThemeToggle } from "./ThemeToggle";
+import { UserMenu } from "./UserMenu";
 
 /**
- * From 768px up: logo, links, search, dark mode button.
- * Below 768px: logo, dark mode button and a hamburger that opens the links + search.
+ * From 768px up: logo, links, search, dark mode button, log in / account menu.
+ * Below 768px: logo, dark mode button, account button and a hamburger that opens the links + search.
  */
 export function SiteHeader() {
   return (
@@ -24,11 +25,17 @@ export function SiteHeader() {
 
         <div className="ml-auto flex items-center gap-2">
           <Suspense
-            fallback={<HeaderSearchShell id="site-search" className="hidden md:flex md:w-48 lg:w-64" />}
+            fallback={
+              <HeaderSearchShell id="site-search" className="hidden md:flex md:w-48 lg:w-64" />
+            }
           >
             <HeaderSearch id="site-search" className="hidden md:flex md:w-48 lg:w-64" />
           </Suspense>
           <ThemeToggle />
+          {/* Suspense: the menu reads the current URL (for "back here after login") */}
+          <Suspense fallback={<div className="size-10 shrink-0" aria-hidden />}>
+            <UserMenu />
+          </Suspense>
           <Suspense fallback={<MenuButtonPlaceholder />}>
             <MobileMenu />
           </Suspense>

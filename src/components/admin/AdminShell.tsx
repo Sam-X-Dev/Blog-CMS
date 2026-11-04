@@ -12,9 +12,11 @@ import {
   LayoutDashboard,
   LogOut,
   Menu,
+  MessageCircle,
   SquarePen,
   Tags,
   TrendingUp,
+  Users,
   X,
 } from "lucide-react";
 import { LogoMark } from "@/components/public/LogoMark";
@@ -28,6 +30,8 @@ const NAV = [
   { href: "/admin/tags", label: "Tags", icon: Tags },
   { href: "/admin/media", label: "Media", icon: Images },
   { href: "/admin/trending", label: "Trending & Featured", icon: TrendingUp },
+  { href: "/admin/comments", label: "Comments", icon: MessageCircle },
+  { href: "/admin/readers", label: "Readers", icon: Users },
 ];
 
 function isActive(href: string, pathname: string) {

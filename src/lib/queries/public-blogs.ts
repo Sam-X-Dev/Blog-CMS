@@ -373,3 +373,13 @@ async function mostReadFirst(
     }
     return result;
 }
+/** A reader's saved blogs, most recently saved first. Blogs that were unpublished are left out. */
+export async function getSavedBlogs(userId: string): Promise<BlogCardData[]> {
+    const saved = await prisma.savedBlog.findMany({
+        where: { userId, blog: { status: "PUBLISHED" } },
+        orderBy: { createdAt: "desc" },
+        take: 100,
+        select: { blog: { select: CARD_SELECT } },
+    });
+    return saved.map((s) => toCard(s.blog));
+}

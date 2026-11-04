@@ -3,7 +3,7 @@
 A full-stack blog platform with two parts:
 
 - **Admin CMS** (`/admin`): the admin logs in, writes blogs in a Word-style editor (or uploads a Markdown file), adds images, a category and tags, then saves a draft or publishes.
-- **Public blog website** (`/`): anyone can read published blogs, search, filter by category and open a blog.
+- **Public blog website** (`/`): anyone can read published blogs, search, filter by category and open a blog. Readers can also create a free account to like, save and comment on blogs.
 
 Everything comes from the database through the API. When the admin edits or publishes a blog, the website shows the change right away.
 
@@ -22,7 +22,7 @@ Everything comes from the database through the API. When the admin edits or publ
 ### Admin CMS
 
 - **Login** with email and password. Passwords are hashed with **bcrypt**; the session is a signed **JWT** in an httpOnly cookie (7 days). Every admin page and admin API is protected; logged-out visitors are sent to `/admin/login` and API calls get `401`.
-- **Dashboard**: total, published and draft blogs, categories, tags, images, views, recently edited and most read blogs (all from the database).
+- **Dashboard**: total, published and draft blogs, categories, tags, images, views, readers, comments, likes, saves, recently edited and most read blogs (all from the database).
 - **Blog management**: list with search, status and category filters, sorting and pagination. Create, edit, publish, unpublish, delete (with a confirmation dialog).
 - **Rich text editor** (Tiptap), laid out like Microsoft Word:
   - Bold, italic, underline, strikethrough, superscript, subscript
@@ -42,6 +42,8 @@ Everything comes from the database through the API. When the admin edits or publ
 - **Auto save**: unsaved work is kept in the browser and offered back after a refresh or crash. `Ctrl/⌘ + S` saves.
 - **SEO fields**: optional title and description for search engines.
 - **Trending & Featured**: choose the homepage featured blog and the editor's picks.
+- **Comments**: see every reader comment (newest first) and delete spam or rude ones.
+- **Readers**: list of reader accounts with their likes, saves and comments.
 - Toast messages for every action, loading states, empty states, and an "unsaved changes" warning.
 
 ### Public website
@@ -55,6 +57,18 @@ Everything comes from the database through the API. When the admin edits or publ
 - **Categories**, **Trending** and **About** pages, plus a friendly 404 page.
 - **Dark mode** toggle on every page, remembered per browser.
 - **Responsive**: tested at 1440px, 1024px, 768px and 390px, with a hamburger menu on mobile.
+
+### Reader accounts
+
+Reading stays open to everyone. A free account adds:
+
+- **Sign up / log in / log out** (`/signup`, `/login`) with name, email and password. Passwords are hashed with bcrypt; the session is a signed JWT in an httpOnly cookie (30 days). After logging in, the reader goes back to the page they were on.
+- **Like** a blog (heart with a live count).
+- **Save** a blog and find it later on **Saved blogs** (`/saved`).
+- **Comment** on a blog, and delete their own comments. Comments are plain text (up to 1000 characters).
+- **My account** (`/account`): name, email, join date, and how many blogs they liked, saved and commented on.
+- Visitors who click Like, Save or Comment are asked to log in first.
+- Reader and admin logins are completely separate: a reader's login can't open the admin panel, and the admin's login doesn't count as a reader.
 
 ## Screenshots
 
@@ -121,14 +135,15 @@ npm run db:deploy      # applies the migrations in prisma/migrations
 npm run db:seed        # adds the starting categories
 ```
 
-> **Database that was set up earlier with `prisma db push`:** the tables already exist, so mark the migrations as done instead of running them:
+> **Database that was set up earlier with `prisma db push`:** those tables already exist, so mark the first two migrations as done, then run the rest:
 >
 > ```bash
 > npx prisma migrate resolve --applied 20261010095011_init
 > npx prisma migrate resolve --applied 20261104000000_trending_featured_seo_views
+> npm run db:deploy
 > ```
 >
-> (Skip the first line if it says it is already applied.) Do **not** run `prisma migrate dev` on a database with real data; it can offer to reset it.
+> (Skip a `resolve` line if it says it is already applied.) Do **not** run `prisma migrate dev` on a database with real data; it can offer to reset it.
 
 Optional: `npm run db:replace-blogs` fills the site with 8 ready-made blogs and covers.
 
@@ -166,6 +181,8 @@ Running it again with the same email resets that admin's password. Then log in a
 | `/categories`, `/categories/:slug` | `/admin/blogs/new` create blog (also `/admin/blogs/create`) |
 | `/trending` | `/admin/blogs/:id/edit` edit blog (also `/admin/blogs/edit/:id`) |
 | `/about` | `/admin/categories`, `/admin/tags`, `/admin/media`, `/admin/trending` |
+| `/login`, `/signup` reader log in / sign up | `/admin/comments` comment moderation |
+| `/saved` saved blogs, `/account` my account | `/admin/readers` reader accounts |
 
 ## API
 
@@ -181,7 +198,7 @@ Every response uses the same shape:
 
 Validation errors add `"errors": { "title": ["Title must be at least 5 characters"] }`.
 
-🔒 = needs the admin login cookie (otherwise `401`).
+🔒 = needs the admin login cookie (otherwise `401`). 👤 = needs a reader login (otherwise `401`).
 
 | Method | Endpoint | |
 |---|---|---|
@@ -209,12 +226,24 @@ Validation errors add `"errors": { "title": ["Title must be at least 5 character
 | POST | `/api/markdown` | 🔒 Convert an uploaded `.md` file to HTML |
 | PATCH | `/api/trending/:id`, `/api/featured/:id` | 🔒 Editor's pick / homepage featured |
 | POST | `/api/views` | Count a blog view |
+| POST | `/api/users/register` | Reader sign up (`{ name, email, password }`), logs in |
+| POST | `/api/users/login` | Reader log in (`{ email, password }`) |
+| POST | `/api/users/logout` | Reader log out |
+| GET | `/api/users/me` | The logged-in reader, or `null` |
+| GET | `/api/engagement/:blogId` | Like and comment counts, plus liked / saved for the reader |
+| PUT / DELETE | `/api/me/likes/:blogId` | 👤 Like / unlike a blog |
+| GET | `/api/me/saved` | 👤 The reader's saved blogs |
+| PUT / DELETE | `/api/me/saved/:blogId` | 👤 Save / unsave a blog |
+| GET | `/api/comments?blogId=` | Comments on a blog |
+| POST | `/api/comments` | 👤 Post a comment (`{ blogId, content }`) |
+| DELETE | `/api/comments/:id` | 👤 own comment, or 🔒 admin (any comment) |
 
 ## Validation and security
 
 - **Blog form** (checked in the browser and again on the server with Zod): title required, at least 5 characters; description required; content and thumbnail required to publish; slug must be lowercase letters, numbers and hyphens.
 - Passwords are hashed with bcrypt (cost 12) and never stored as plain text.
-- Login: same message for a wrong email or wrong password, and a limit of 8 wrong tries per 15 minutes.
+- Login: same message for a wrong email or wrong password, and a limit of 8 wrong tries per 15 minutes. Sign up is limited to 5 accounts per hour per IP, comments to 5 per minute per reader.
+- Admin and reader tokens are signed for different audiences, so one can never be used as the other.
 - `src/proxy.ts` blocks admin pages and admin APIs without a valid token; each admin API also checks the session itself.
 - Blog HTML is cleaned with `sanitize-html` before it is saved and before it is shown, so scripts and unsafe links are removed.
 
@@ -228,6 +257,10 @@ Validation errors add `"errors": { "title": ["Title must be at least 5 character
 | `Tag` | id, name (unique), slug (unique); many-to-many with `Blog` |
 | `Media` | id, url, publicId, width, height, format, bytes |
 | `BlogView` | blogId + day, count (views per day, for "most read") |
+| `User` | id, name, email (unique), password (bcrypt hash): reader accounts |
+| `BlogLike` | userId + blogId (one like per reader per blog) |
+| `SavedBlog` | userId + blogId, createdAt (the reader's saved list) |
+| `Comment` | id, content, blogId, userId, createdAt |
 
 Schema: [`prisma/schema.prisma`](prisma/schema.prisma). Migrations: [`prisma/migrations`](prisma/migrations).
 
@@ -243,12 +276,12 @@ prisma/
 public/                  logo, stickers, blog covers
 src/
   app/
-    (public)/            public website pages
-    admin/               admin panel pages (login, dashboard, blogs, categories, tags, media)
-    api/                 REST API (auth, blogs, categories, tags, media, upload, markdown)
+    (public)/            public website pages (plus reader login, sign up, saved, account)
+    admin/               admin panel pages (login, dashboard, blogs, categories, tags, media, comments, readers)
+    api/                 REST API (auth, users, blogs, comments, likes, saved, categories, tags, media)
   components/
     admin/               sidebar, blog form, editor, media library, categories, tags
-    public/              navbar, footer, blog card, search, share buttons, pagination
+    public/              navbar, account menu, footer, blog card, search, like/save, comments, share buttons
     ui/                  shared pieces (Select, ConfirmDialog)
   lib/                   auth, database, validation, sanitizing, queries, helpers
   proxy.ts               protects /admin and the admin APIs

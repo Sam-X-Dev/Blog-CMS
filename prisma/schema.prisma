@@ -43,6 +43,9 @@ model Blog {
   category   Category?  @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   tags       Tag[]
   views      BlogView[]
+  likes      BlogLike[]
+  saves      SavedBlog[]
+  comments   Comment[]
 
   @@index([status, publishedAt])
   @@index([categoryId])
@@ -86,4 +89,52 @@ model Media {
   format    String?
   bytes     Int?
   createdAt DateTime @default(now())
+}
+
+// Readers who sign up on the public website (separate from Admin)
+model User {
+  id        String      @id @default(cuid())
+  name      String
+  email     String      @unique
+  password  String // bcrypt hash
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  likes     BlogLike[]
+  saves     SavedBlog[]
+  comments  Comment[]
+}
+
+model BlogLike {
+  userId    String
+  blogId    String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  blog      Blog     @relation(fields: [blogId], references: [id], onDelete: Cascade)
+
+  @@id([userId, blogId])
+  @@index([blogId])
+}
+
+model SavedBlog {
+  userId    String
+  blogId    String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  blog      Blog     @relation(fields: [blogId], references: [id], onDelete: Cascade)
+
+  @@id([userId, blogId])
+  @@index([userId, createdAt])
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String
+  blogId    String
+  userId    String
+  createdAt DateTime @default(now())
+  blog      Blog     @relation(fields: [blogId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([blogId, createdAt])
+  @@index([createdAt])
 }
